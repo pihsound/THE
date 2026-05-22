@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Frequency Ranking — Verb 300</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F3EA;--paper2:#FBF8F1;--ink:#2A2723;--ink2:#6B6358;--ink3:#9A9183;
+  --rust:#C2511F;--rust-soft:#F4E3D8;--line:#E5DCCB;--line2:#D8CDB8;
+  --tS:#C2511F;--tS-bg:#F6E1D6;--tA:#B5790C;--tA-bg:#F6E9CE;--tB:#0F6E56;--tB-bg:#D9EFE6;
+  --tC:#185FA5;--tC-bg:#DCEAF8;--tZ:#8A8174;--tZ-bg:#EDE7DA;
+  --serif:'Gowun Batang',serif;--display:'Fraunces',serif;--sans:'IBM Plex Sans KR',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--line) 0.5px,transparent 0.5px);background-size:22px 22px}
+.shell{max-width:900px;margin:0 auto;padding:0 22px 70px}
+.kicker{font-family:var(--display);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--rust);font-weight:600}
+
+.hero{padding:56px 0 28px;border-bottom:2px solid var(--ink);margin-bottom:8px;position:relative}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,6vw,58px);line-height:1.05;margin-top:14px}
+.hero h1 .en{display:block;font-family:var(--display);font-style:italic;font-weight:400;color:var(--ink2);font-size:.44em;margin-top:12px}
+.hero .lede{margin-top:22px;max-width:600px;color:var(--ink2);font-size:15px;line-height:1.72}
+.hero .lede b{color:var(--ink);font-weight:600}
+.stripe{position:absolute;top:50px;right:0;font-family:var(--display);font-size:clamp(70px,13vw,150px);font-weight:600;color:var(--rust-soft);line-height:.8;z-index:0;user-select:none}
+.hero>*{position:relative;z-index:1}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin:26px 0 24px}
+.stat{background:var(--paper2);border:1px solid var(--line2);border-radius:13px;padding:14px 16px}
+.stat .l{font-size:11.5px;color:var(--ink3)}
+.stat .v{font-family:var(--display);font-size:24px;font-weight:600;margin-top:2px}
+.stat .v small{font-size:13px;color:var(--ink3);font-weight:400}
+
+.toolbar{position:sticky;top:0;z-index:20;background:rgba(247,243,234,.93);backdrop-filter:blur(8px);padding:14px 0;margin:0 -22px 6px;border-bottom:1px solid var(--line2)}
+.toolbar .inner{max-width:900px;margin:0 auto;padding:0 22px;display:flex;flex-direction:column;gap:11px}
+.tsearch{position:relative}
+.tsearch input{width:100%;font-family:var(--sans);font-size:14px;padding:10px 14px 10px 38px;border:1px solid var(--line2);border-radius:10px;background:var(--paper2);color:var(--ink);outline:none}
+.tsearch input:focus{border-color:var(--rust)}
+.tsearch svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--ink3)}
+.filters{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.fbtn{font-size:12.5px;padding:6px 13px;border-radius:999px;border:1px solid var(--line2);background:var(--paper2);cursor:pointer;color:var(--ink2);font-family:var(--sans)}
+.fbtn:hover{border-color:var(--ink3)}
+.fbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.fbtn.study{margin-left:auto;border-color:var(--rust);color:var(--rust)}
+.fbtn.study.on{background:var(--rust);color:#fff;border-color:var(--rust)}
+
+.list{margin-top:18px;display:flex;flex-direction:column;gap:5px}
+.row{display:flex;align-items:center;gap:13px;padding:10px 14px;border-radius:11px;border:1px solid var(--line);background:var(--paper2)}
+.row .rank{font-family:var(--display);font-size:13px;color:var(--ink3);width:34px;text-align:right;flex-shrink:0;font-weight:500}
+.row .tier{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:12px;font-weight:600;flex-shrink:0}
+.tier.S{background:var(--tS-bg);color:var(--tS)}.tier.A{background:var(--tA-bg);color:var(--tA)}.tier.B{background:var(--tB-bg);color:var(--tB)}.tier.C{background:var(--tC-bg);color:var(--tC)}.tier.Z{background:var(--tZ-bg);color:var(--tZ)}
+.row .wm{flex:1;min-width:0}
+.row .wm .w{font-family:var(--display);font-size:16px;font-weight:600;display:inline-block;vertical-align:middle}
+.row .wm .basic{font-size:10px;color:var(--ink3);border:1px solid var(--line2);border-radius:4px;padding:0 5px;margin-left:7px;vertical-align:middle}
+.row .wm .m{font-size:12.5px;color:var(--ink2);margin-top:1px}
+.row .dots{display:flex;gap:3px;width:48px;flex-shrink:0}
+.row .dot{width:6px;height:6px;border-radius:50%;background:var(--line2)}
+.row .dot.f{background:var(--tB)}
+.row .cnt{font-family:var(--display);font-size:14px;font-weight:600;min-width:42px;text-align:right;flex-shrink:0}
+.empty{text-align:center;padding:50px 0;color:var(--ink3);font-style:italic}
+footer{margin-top:40px;padding-top:22px;border-top:1px solid var(--line2);font-size:12.5px;color:var(--ink3);line-height:1.7}
+footer b{color:var(--ink2)}
+@media(max-width:560px){.shell{padding:0 16px 50px}.toolbar{margin:0 -16px 6px}.toolbar .inner{padding:0 16px}.row .dots{display:none}.stripe{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="hero">
+    <div class="stripe">★</div>
+    <div class="kicker">1단계 · 기출 빈출 랭킹</div>
+    <h1>빈출 랭킹<span class="en">Frequency across 6 past exams</span></h1>
+    <p class="lede">국가직·지방직 영어 기출 <b>6회분</b>(2024~2026) 전체 지문에서 300개 동사의 출현 빈도를 변화형까지 포함해 집계했습니다. 등급 <span style="font-family:var(--display);font-weight:600">S</span>(최빈출)부터 <span style="font-family:var(--display);font-weight:600">Z</span>(미출현)까지. 오른쪽 점은 몇 개 시험에 등장했는지(/6)를 뜻합니다.</p>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <div class="inner">
+      <div class="tsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" placeholder="단어 또는 뜻 검색 (예: reduce, 줄이다)">
+      </div>
+      <div class="filters" id="filters">
+        <button class="fbtn on" data-t="all">전체</button>
+        <button class="fbtn" data-t="S">S</button>
+        <button class="fbtn" data-t="A">A</button>
+        <button class="fbtn" data-t="B">B</button>
+        <button class="fbtn" data-t="C">C</button>
+        <button class="fbtn" data-t="Z">미출현</button>
+        <button class="fbtn study" data-t="study">★ 학습 우선</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <footer>
+    <b>집계 출처</b> · 2024 국가직 / 2025 국가직 본·예시1차·예시2차 / 2025 지방직 / 2026 국가직. 변화형(achieve→achieved 등, 불규칙 포함) 출현 횟수 기준.<br>
+    <b>★ 학습 우선</b> · A·B 등급에서 기초 동사(have·get·make 등)를 뺀, 실제 외울 가치가 높은 동사들. have가 1위인 건 조동사로 어디든 쓰이기 때문이지 학습 대상이라서가 아닙니다.
+  </footer>
+</div>
+<script>
+const D=[[1, "have", 100, 6, "S", "가지다, 소유하다", 1], [2, "get", 26, 6, "S", "받다, 얻다, 되다", 1], [3, "make", 26, 5, "S", "만들다, 제조하다", 1], [4, "need", 25, 6, "S", "~을 필요로 하다", 1], [5, "use", 24, 5, "S", "쓰다, 사용하다", 1], [6, "like", 16, 6, "S", "좋아하다, 선호하다", 1], [7, "write", 16, 5, "S", "쓰다, 작성하다", 0], [8, "include", 15, 6, "S", "포함하다", 0], [9, "find", 15, 5, "S", "찾다, 발견하다", 1], [10, "ensure", 14, 4, "S", "반드시 ~하게 하다, 보장하다", 0], [11, "know", 13, 5, "S", "알다, 이해하다", 1], [12, "provide", 12, 6, "S", "제공하다, 공급하다", 0], [13, "pay", 11, 4, "S", "지불하다, 납부하다", 0], [14, "understand", 11, 4, "S", "이해하다, 알아듣다", 0], [15, "offer", 10, 5, "S", "제의하다, 제공하다", 0], [16, "focus", 10, 4, "S", "집중하다, 초점을 맞추다", 0], [17, "support", 10, 3, "S", "지지하다, 지원하다", 0], [18, "cause", 9, 5, "A", "~을 야기하다", 0], [19, "come", 9, 5, "A", "오다", 1], [20, "increase", 9, 4, "A", "증가하다, 늘리다", 0], [21, "learn", 9, 4, "A", "배우다, 학습하다", 0], [22, "share", 9, 4, "A", "공유하다, 나누다", 0], [23, "enter", 9, 3, "A", "들어가다, 시작하다", 0], [24, "experience", 9, 3, "A", "경험하다, 겪다", 0], [25, "give", 9, 3, "A", "주다, 건네주다", 1], [26, "create", 8, 5, "A", "창조하다, 만들다", 0], [27, "show", 8, 5, "A", "보여주다, 증명하다", 0], [28, "start", 8, 5, "A", "시작하다, 시작되다", 1], [29, "ask", 8, 4, "A", "묻다, 요청하다", 1], [30, "meet", 8, 4, "A", "만나다, 모이다", 0], [31, "order", 8, 4, "A", "명령하다, 주문하다", 0], [32, "require", 8, 4, "A", "필요로 하다, 요구하다", 0], [33, "result", 8, 4, "A", "발생하다, 생기다", 0], [34, "change", 8, 3, "A", "변하다, 바꾸다", 0], [35, "listen", 8, 3, "A", "듣다, 경청하다", 0], [36, "receive", 8, 3, "A", "받다, 받아들이다", 0], [37, "spend", 8, 3, "A", "(돈을) 쓰다, (시간을) 보내다", 0], [38, "train", 8, 3, "A", "교육하다, 훈련하다", 0], [39, "look", 7, 5, "A", "보다, 찾다", 1], [40, "lose", 7, 4, "A", "잃어버리다, 빼앗기다", 0], [41, "matter", 7, 4, "A", "중요하다, 문제되다", 0], [42, "send", 7, 4, "A", "보내다, 발송하다", 0], [43, "believe", 7, 3, "A", "믿다, 생각하다", 0], [44, "become", 6, 4, "A", "~이 되다", 0], [45, "free", 6, 4, "A", "석방하다, 풀어주다", 0], [46, "regard", 6, 4, "A", "여기다, 간주하다", 0], [47, "save", 6, 4, "A", "구하다, 저축하다", 0], [48, "achieve", 6, 3, "A", "달성하다, 성취하다", 0], [49, "drive", 6, 3, "A", "몰다, 운전하다", 0], [50, "face", 6, 3, "A", "~을 마주보다, 직면하다", 0], [51, "join", 6, 3, "A", "연결하다, 가입하다", 0], [52, "try", 6, 3, "A", "노력하다, 맛보다", 1], [53, "inform", 6, 2, "A", "알리다, 통지하다", 0], [54, "reach", 6, 2, "A", "도달하다, ~에 이르다", 0], [55, "establish", 5, 5, "A", "설립하다, 수립하다", 0], [56, "aim", 5, 4, "A", "목표하다, 겨누다", 0], [57, "avoid", 5, 4, "A", "피하다, 막다", 0], [58, "follow", 5, 4, "A", "따라가다, 뒤를 잇다", 0], [59, "seem", 5, 4, "A", "~인 것 같다, ~처럼 보이다", 0], [60, "appreciate", 5, 3, "A", "진가를 알아보다, 인정하다", 0], [61, "bring", 5, 3, "A", "가져오다, 야기하다", 0], [62, "feel", 5, 3, "A", "느끼다", 1], [63, "hear", 5, 3, "A", "듣다, 들리다", 0], [64, "involve", 5, 3, "A", "수반하다, 관련시키다", 0], [65, "might", 5, 3, "A", "~일 수도 있다 (가능성)", 0], [66, "reduce", 5, 3, "A", "줄이다, 축소하다", 0], [67, "shape", 5, 3, "A", "형성하다, 빚다", 0], [68, "suggest", 5, 3, "A", "제안하다, 시사하다", 0], [69, "continue", 5, 2, "A", "계속하다", 0], [70, "develop", 5, 2, "A", "성장하다, 개발하다", 0], [71, "finish", 5, 2, "A", "끝내다, 마치다", 0], [72, "grow", 5, 2, "A", "커지다, 자라다", 0], [73, "keep", 5, 2, "A", "유지하다, 계속하다", 0], [74, "relate", 5, 2, "A", "관련시키다, 연관하다", 0], [75, "supply", 5, 2, "A", "공급하다, 제공하다", 0], [76, "leave", 4, 4, "B", "떠나다, 출발하다", 0], [77, "mean", 4, 4, "B", "~을 뜻하다, 의미하다", 0], [78, "recommend", 4, 4, "B", "추천하다, 권하다", 0], [79, "remain", 4, 4, "B", "남다, 계속 ~이다", 0], [80, "report", 4, 4, "B", "알리다, 보도하다", 0], [81, "sit", 4, 4, "B", "앉다", 0], [82, "accept", 4, 3, "B", "받아들이다, 수락하다", 0], [83, "bear", 4, 3, "B", "참다, 견디다", 0], [84, "begin", 4, 3, "B", "시작하다", 0], [85, "build", 4, 3, "B", "짓다, 건설하다", 0], [86, "enjoy", 4, 3, "B", "즐기다, 누리다", 0], [87, "ignore", 4, 3, "B", "무시하다, 못 본 척하다", 0], [88, "occur", 4, 3, "B", "일어나다, 발생하다", 0], [89, "type", 4, 3, "B", "타자치다, 입력하다", 0], [90, "allow", 4, 2, "B", "허락하다, 용납하다", 0], [91, "carry", 4, 2, "B", "나르다, 휴대하다", 0], [92, "control", 4, 2, "B", "지배하다, 규제하다", 0], [93, "fall", 4, 2, "B", "떨어지다, 넘어지다", 0], [94, "contribute", 4, 1, "B", "기여하다, 기부하다", 0], [95, "add", 3, 3, "B", "추가하다, 합하다", 0], [96, "appear", 3, 3, "B", "나타나다, 생기다", 0], [97, "arrive", 3, 3, "B", "도착하다", 0], [98, "complete", 3, 3, "B", "완료하다, 끝마치다", 0], [99, "consider", 3, 3, "B", "고려하다, ~로 여기다", 0], [100, "destroy", 3, 3, "B", "파괴하다, 말살하다", 0], [101, "hold", 3, 3, "B", "잡고 있다, 유지하다", 0], [102, "let", 3, 3, "B", "허락하다, 시키다", 0], [103, "prepare", 3, 3, "B", "준비하다, 대비하다", 0], [104, "produce", 3, 3, "B", "생산하다, 낳다", 0], [105, "reveal", 3, 3, "B", "드러내다, 폭로하다", 0], [106, "solve", 3, 3, "B", "해결하다, 풀다", 0], [107, "stay", 3, 3, "B", "계속 있다, 머무르다", 0], [108, "break", 3, 2, "B", "깨다, 부서지다", 0], [109, "choose", 3, 2, "B", "선택하다, 고르다", 0], [110, "deal", 3, 2, "B", "다루다, 거래하다", 0], [111, "encourage", 3, 2, "B", "격려하다, 부추기다", 0], [112, "fail", 3, 2, "B", "실패하다, ~하지 못하다", 0], [113, "fight", 3, 2, "B", "싸우다, 전투하다", 0], [114, "happen", 3, 2, "B", "발생하다, 일어나다", 0], [115, "hide", 3, 2, "B", "감추다, 숨다", 0], [116, "hope", 3, 2, "B", "바라다, 희망하다", 0], [117, "pick", 3, 2, "B", "고르다, 뽑다", 0], [118, "serve", 3, 2, "B", "제공하다, 섬기다, 봉사하다", 0], [119, "stand", 3, 2, "B", "서다, 일어서다", 0], [120, "store", 3, 2, "B", "저장하다, 보관하다", 0], [121, "treat", 3, 2, "B", "대하다, 다루다, 치부하다", 0], [122, "point", 3, 1, "B", "가리키다, 시사하다", 0], [123, "assist", 2, 2, "C", "돕다", 0], [124, "base", 2, 2, "C", "~에 근거를 두다", 0], [125, "catch", 2, 2, "C", "잡다, 붙잡다", 0], [126, "commit", 2, 2, "C", "저지르다, 약속하다", 0], [127, "compare", 2, 2, "C", "비교하다", 0], [128, "decide", 2, 2, "C", "결정하다", 0], [129, "die", 2, 2, "C", "죽다, 사라지다", 0], [130, "discover", 2, 2, "C", "발견하다, 알아내다", 0], [131, "divide", 2, 2, "C", "나누다", 0], [132, "enable", 2, 2, "C", "~을 할 수 있게 하다", 0], [133, "explain", 2, 2, "C", "설명하다, 해명하다", 0], [134, "express", 2, 2, "C", "표현하다, 나타내다", 0], [135, "fit", 2, 2, "C", "(크기가) 맞다, 적합하다", 0], [136, "form", 2, 2, "C", "형성하다, 구성되다", 0], [137, "gain", 2, 2, "C", "얻다, 붙다", 0], [138, "generate", 2, 2, "C", "발생시키다, 만들어 내다", 0], [139, "handle", 2, 2, "C", "다루다, 처리하다", 0], [140, "launch", 2, 2, "C", "시작하다, 출시하다", 0], [141, "mind", 2, 2, "C", "언짢아하다, 개의하다", 0], [142, "miss", 2, 2, "C", "놓치다, 그리워하다", 0], [143, "push", 2, 2, "C", "밀다, 누르다", 0], [144, "refer", 2, 2, "C", "언급하다, 참조하게 하다", 0], [145, "reflect", 2, 2, "C", "비추다, 반영하다", 0], [146, "spread", 2, 2, "C", "펼치다, 퍼다, 바르다", 0], [147, "submit", 2, 2, "C", "제출하다, 항복하다", 0], [148, "turn", 2, 2, "C", "돌다, 돌리다", 0], [149, "urge", 2, 2, "C", "충고하다, 촉구하다", 0], [150, "assess", 2, 1, "C", "평가하다, 가늠하다", 0], [151, "assume", 2, 1, "C", "추정하다, 맡다", 0], [152, "consume", 2, 1, "C", "소모하다, 먹다", 0], [153, "draw", 2, 1, "C", "그리다, 끌어당기다", 0], [154, "promise", 2, 1, "C", "약속하다, ~의 조짐을 보이다", 0], [155, "raise", 2, 1, "C", "들어 올리다, 인상하다, 양육하다", 0], [156, "represent", 2, 1, "C", "대표하다, ~에 해당하다", 0], [157, "set", 2, 1, "C", "놓다, 세우다", 0], [158, "suffer", 2, 1, "C", "시달리다, 고통받다, 겪다", 0], [159, "survive", 2, 1, "C", "살아남다, 생존하다", 0], [160, "acquire", 1, 1, "C", "습득하다, 획득하다", 0], [161, "advise", 1, 1, "C", "조언하다, 충고하다", 0], [162, "allocate", 1, 1, "C", "할당하다", 0], [163, "answer", 1, 1, "C", "대답하다, 부합하다", 0], [164, "apply", 1, 1, "C", "신청하다, 적용하다", 0], [165, "arise", 1, 1, "C", "생기다, 발생하다", 0], [166, "belong", 1, 1, "C", "속하다, 소속하다", 0], [167, "blame", 1, 1, "C", "~을 탓하다", 0], [168, "burn", 1, 1, "C", "타다, 불태우다", 0], [169, "care", 1, 1, "C", "상관하다, 배려하다", 0], [170, "charge", 1, 1, "C", "청구하다, 부과하다", 0], [171, "complain", 1, 1, "C", "불평하다, 항의하다", 0], [172, "comprehend", 1, 1, "C", "이해하다", 0], [173, "conceal", 1, 1, "C", "감추다, 숨기다", 0], [174, "confuse", 1, 1, "C", "혼란시키다, 혼동하다", 0], [175, "declare", 1, 1, "C", "선언하다, 신고하다", 0], [176, "deliver", 1, 1, "C", "배달하다, 연설하다", 0], [177, "depend", 1, 1, "C", "의존하다, 좌우되다", 0], [178, "deprive", 1, 1, "C", "빼앗다, 박탈하다", 0], [179, "describe", 1, 1, "C", "묘사하다, 말하다", 0], [180, "emerge", 1, 1, "C", "나오다, 드러나다, 부상하다", 0], [181, "estimate", 1, 1, "C", "추산하다, 추정하다", 0], [182, "examine", 1, 1, "C", "조사하다, 검사하다", 0], [183, "exclude", 1, 1, "C", "제외하다, 배제하다", 0], [184, "exist", 1, 1, "C", "존재하다, 실재하다", 0], [185, "forget", 1, 1, "C", "잊다, 잊어버리다", 0], [186, "fulfill", 1, 1, "C", "이행하다, 성취하다", 0], [187, "gather", 1, 1, "C", "모이다, 수집하다", 0], [188, "hurt", 1, 1, "C", "다치게 하다, 아프다", 0], [189, "imagine", 1, 1, "C", "상상하다, 생각하다", 0], [190, "indicate", 1, 1, "C", "나타내다, 시사하다", 0], [191, "intend", 1, 1, "C", "의도하다, 작정하다", 0], [192, "introduce", 1, 1, "C", "소개하다, 진행하다", 0], [193, "lie", 1, 1, "C", "누워있다, 놓여있다", 0], [194, "maintain", 1, 1, "C", "유지하다, 주장하다", 0], [195, "notice", 1, 1, "C", "주목하다, 의식하다", 0], [196, "participate", 1, 1, "C", "참가하다, 참여하다", 0], [197, "pass", 1, 1, "C", "지나가다, 통과하다", 0], [198, "pretend", 1, 1, "C", "~인 척하다, 가장하다", 0], [199, "put", 1, 1, "C", "놓다, 넣다", 0], [200, "recover", 1, 1, "C", "회복되다, 만회하다", 0], [201, "reject", 1, 1, "C", "거부하다, 거절하다", 0], [202, "remember", 1, 1, "C", "기억하다, 명심하다", 0], [203, "respond", 1, 1, "C", "대답하다, 반응을 보이다", 0], [204, "restore", 1, 1, "C", "회복시키다, 복원하다", 0], [205, "return", 1, 1, "C", "돌아오다, 돌려주다", 0], [206, "stick", 1, 1, "C", "찌르다, 붙이다, 달라붙다", 0], [207, "suspect", 1, 1, "C", "의심하다, 수상쩍어하다", 0], [208, "tend", 1, 1, "C", "~하는 경향이 있다, 돌보다", 0], [209, "touch", 1, 1, "C", "만지다, 접촉하다", 0], [210, "travel", 1, 1, "C", "여행하다, 이동하다", 0], [211, "underestimate", 1, 1, "C", "과소평가하다", 0], [212, "wear", 1, 1, "C", "(옷 등) 입다, 착용하다", 0], [213, "abide", 0, 0, "Z", "참다, 머무르다", 0], [214, "admit", 0, 0, "Z", "인정하다, 자백하다", 0], [215, "afford", 0, 0, "Z", "~할 여유가 되다", 0], [216, "agree", 0, 0, "Z", "동의하다, 찬성하다", 0], [217, "apologize", 0, 0, "Z", "사과하다", 0], [218, "argue", 0, 0, "Z", "주장하다, 다투다", 0], [219, "assign", 0, 0, "Z", "맡기다, 배치하다", 0], [220, "associate", 0, 0, "Z", "연상하다, 어울리다", 0], [221, "attempt", 0, 0, "Z", "시도하다", 0], [222, "attribute", 0, 0, "Z", "~의 결과로 보다, 기인하다", 0], [223, "beat", 0, 0, "Z", "이기다", 0], [224, "bet", 0, 0, "Z", "돈을 걸다, ~이 틀림없다", 0], [225, "bid", 0, 0, "Z", "입찰하다, 값을 부르다", 0], [226, "bite", 0, 0, "Z", "물다", 0], [227, "blow", 0, 0, "Z", "불다", 0], [228, "calculate", 0, 0, "Z", "계산하다, 추정하다", 0], [229, "cancel", 0, 0, "Z", "취소하다, 무효화하다", 0], [230, "cherish", 0, 0, "Z", "소중히 여기다", 0], [231, "convince", 0, 0, "Z", "납득시키다, 설득하다", 0], [232, "count", 0, 0, "Z", "세다, 계산하다", 0], [233, "derive", 0, 0, "Z", "끌어내다, ~에서 비롯되다", 0], [234, "deserve", 0, 0, "Z", "~을 받을 만하다", 0], [235, "differ", 0, 0, "Z", "다르다", 0], [236, "disclose", 0, 0, "Z", "밝히다, 폭로하다", 0], [237, "discuss", 0, 0, "Z", "상의하다, 논하다", 0], [238, "dispense", 0, 0, "Z", "나누어주다, 조제하다", 0], [239, "dispute", 0, 0, "Z", "반박하다, 이의를 제기하다", 0], [240, "distinguish", 0, 0, "Z", "구별하다, 식별하다", 0], [241, "dream", 0, 0, "Z", "꿈꾸다, 상상하다", 0], [242, "drink", 0, 0, "Z", "마시다", 0], [243, "earn", 0, 0, "Z", "(돈을) 벌다, 얻다", 0], [244, "embarrass", 0, 0, "Z", "당황스럽게 만들다", 0], [245, "escalate", 0, 0, "Z", "확대/악화되다", 0], [246, "fear", 0, 0, "Z", "두려워하다, 우려하다", 0], [247, "forgive", 0, 0, "Z", "용서하다, 탕감하다", 0], [248, "hate", 0, 0, "Z", "싫어하다, 미워하다", 0], [249, "hesitate", 0, 0, "Z", "망설이다, 주저하다", 0], [250, "hit", 0, 0, "Z", "때리다, 부딪치다", 0], [251, "influence", 0, 0, "Z", "영향을 주다", 0], [252, "lack", 0, 0, "Z", "부족하다, ~이 없다", 0], [253, "laugh", 0, 0, "Z", "웃다", 0], [254, "lend", 0, 0, "Z", "빌려주다, 대출하다", 0], [255, "manage", 0, 0, "Z", "관리하다, 해내다", 0], [256, "mention", 0, 0, "Z", "언급하다, 거론하다", 0], [257, "ought", 0, 0, "Z", "~해야 하다", 0], [258, "overcome", 0, 0, "Z", "극복하다, 이기다", 0], [259, "overlook", 0, 0, "Z", "간과하다, 못 본 체하다", 0], [260, "perform", 0, 0, "Z", "수행하다, 공연하다", 0], [261, "possess", 0, 0, "Z", "소유하다, 지니다", 0], [262, "prefer", 0, 0, "Z", "~을 더 좋아하다, 선호하다", 0], [263, "present", 0, 0, "Z", "주다, 제시하다", 0], [264, "prevent", 0, 0, "Z", "예방하다, 막다", 0], [265, "prohibit", 0, 0, "Z", "금지하다", 0], [266, "pull", 0, 0, "Z", "끌다, 당기다", 0], [267, "pursue", 0, 0, "Z", "추구하다, 뒤쫓다", 0], [268, "realize", 0, 0, "Z", "깨닫다, 실현하다", 0], [269, "refuse", 0, 0, "Z", "거절하다, 거부하다", 0], [270, "reinforce", 0, 0, "Z", "강화하다, 보강하다", 0], [271, "remove", 0, 0, "Z", "치우다, 제거하다", 0], [272, "rest", 0, 0, "Z", "쉬다, 휴식하다", 0], [273, "seek", 0, 0, "Z", "찾다, 추구하다", 0], [274, "sell", 0, 0, "Z", "팔다, 매도하다", 0], [275, "settle", 0, 0, "Z", "정착하다, 해결하다", 0], [276, "sew", 0, 0, "Z", "바느질하다, 꿰매다", 0], [277, "shake", 0, 0, "Z", "흔들리다, 흔들다", 0], [278, "shoot", 0, 0, "Z", "쏘다, 촬영하다", 0], [279, "shut", 0, 0, "Z", "닫다, 봉하다", 0], [280, "sink", 0, 0, "Z", "가라앉다, 침몰시키다", 0], [281, "slide", 0, 0, "Z", "미끄러지다, 움직이다", 0], [282, "slip", 0, 0, "Z", "미끄러지다, 빠져나가다", 0], [283, "soak", 0, 0, "Z", "담그다, 흠뻑 적시다", 0], [284, "sort", 0, 0, "Z", "분류하다, 구분하다", 0], [285, "spill", 0, 0, "Z", "흘리다, 엎지르다", 0], [286, "steal", 0, 0, "Z", "훔치다, 빼내다", 0], [287, "strike", 0, 0, "Z", "치다, 부딪치다, 떠오르다", 0], [288, "succeed", 0, 0, "Z", "성공하다, 계승하다", 0], [289, "suppose", 0, 0, "Z", "생각하다, 가정하다", 0], [290, "throw", 0, 0, "Z", "던지다, 내던지다", 0], [291, "transport", 0, 0, "Z", "수송하다, 이동시키다", 0], [292, "undergo", 0, 0, "Z", "겪다, 받다, 거치다", 0], [293, "vanish", 0, 0, "Z", "사라지다, 없어지다", 0], [294, "vary", 0, 0, "Z", "다르다, 다양하다", 0], [295, "violate", 0, 0, "Z", "위반하다, 침해하다", 0], [296, "watch", 0, 0, "Z", "보다, 지켜보다", 0], [297, "wish", 0, 0, "Z", "원하다, 바라다", 0], [298, "worry", 0, 0, "Z", "걱정하다", 0], [299, "yell", 0, 0, "Z", "고함치다, 소리 지르다", 0], [300, "yield", 0, 0, "Z", "산출하다, 양보하다", 0]];
+const $=id=>document.getElementById(id);
+const tierCount=t=>D.filter(x=>x[4]===t).length;
+$('stats').innerHTML=`
+  <div class="stat"><div class="l">출현 동사</div><div class="v">${D.filter(x=>x[2]>0).length}<small>/300</small></div></div>
+  <div class="stat"><div class="l">S · 10회+</div><div class="v">${tierCount('S')}</div></div>
+  <div class="stat"><div class="l">A · 5–9회</div><div class="v">${tierCount('A')}</div></div>
+  <div class="stat"><div class="l">B · 3–4회</div><div class="v">${tierCount('B')}</div></div>
+  <div class="stat"><div class="l">미출현</div><div class="v">${tierCount('Z')}</div></div>`;
+
+let filter='all';
+function dots(e){let s='';for(let i=0;i<6;i++)s+=`<span class="dot${i<e?' f':''}"></span>`;return s;}
+function render(){
+  const q=$('q').value.trim().toLowerCase();
+  const rows=D.filter(r=>{
+    const[rk,w,c,e,t,m,b]=r;
+    let mf=false;
+    if(filter==='all')mf=true;
+    else if(filter==='study')mf=(t==='A'||t==='B')&&b===0;
+    else mf=(t===filter);
+    const qf=!q||w.toLowerCase().includes(q)||(m||'').includes(q);
+    return mf&&qf;
+  });
+  $('list').innerHTML = rows.length? rows.map(r=>{
+    const[rk,w,c,e,t,m,b]=r;
+    return `<div class="row">
+      <span class="rank">${rk}</span>
+      <span class="tier ${t}">${t==='Z'?'·':t}</span>
+      <span class="wm"><span class="w">${w}</span>${b?'<span class="basic">기초</span>':''}<div class="m">${m||''}</div></span>
+      <span class="dots">${e>0?dots(e):''}</span>
+      <span class="cnt">${c>0?c+'회':'–'}</span>
+    </div>`;
+  }).join('') : '<div class="empty">검색 결과가 없습니다</div>';
+}
+$('filters').addEventListener('click',ev=>{
+  const btn=ev.target.closest('.fbtn');if(!btn)return;
+  filter=btn.dataset.t;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('on',b===btn));
+  render();
+});
+$('q').addEventListener('input',render);
+render();
+
+</script>
+</body>
+</html>

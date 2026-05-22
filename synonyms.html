@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synonym Clusters — Verb 300</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F3EA;
+  --paper2:#FBF8F1;
+  --ink:#2A2723;
+  --ink2:#6B6358;
+  --ink3:#9A9183;
+  --rust:#C2511F;
+  --rust-soft:#F4E3D8;
+  --line:#E5DCCB;
+  --line2:#D8CDB8;
+  --tS:#C2511F; --tS-bg:#F6E1D6;
+  --tA:#B5790C; --tA-bg:#F6E9CE;
+  --tB:#0F6E56; --tB-bg:#D9EFE6;
+  --tC:#185FA5; --tC-bg:#DCEAF8;
+  --tZ:#8A8174; --tZ-bg:#EDE7DA;
+  --serif:'Gowun Batang',serif;
+  --display:'Fraunces',serif;
+  --sans:'IBM Plex Sans KR',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--line) 0.5px,transparent 0.5px);
+  background-size:22px 22px;
+}
+.shell{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+
+/* HERO */
+.hero{padding:64px 0 32px;border-bottom:2px solid var(--ink);margin-bottom:8px;position:relative}
+.kicker{font-family:var(--display);font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--rust);font-weight:600;margin-bottom:18px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,6vw,68px);line-height:1.05;letter-spacing:-.01em}
+.hero h1 .en{font-family:var(--display);font-weight:400;font-style:italic;color:var(--ink2);display:block;font-size:.45em;margin-top:14px;letter-spacing:0}
+.lede{margin-top:24px;max-width:620px;font-size:15.5px;color:var(--ink2);line-height:1.75}
+.lede b{color:var(--ink);font-weight:600}
+.stripe{position:absolute;top:64px;right:0;font-family:var(--display);font-size:clamp(80px,14vw,170px);font-weight:600;color:var(--rust-soft);line-height:.8;z-index:0;pointer-events:none;user-select:none}
+.hero>*{position:relative;z-index:1}
+
+/* TOOLBAR */
+.toolbar{position:sticky;top:0;z-index:50;background:rgba(247,243,234,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line2);padding:14px 0;margin-bottom:32px}
+.toolbar .shell-inner{max-width:1080px;margin:0 auto;padding:0 24px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.tsearch{flex:1;min-width:200px;position:relative}
+.tsearch input{width:100%;font-family:var(--sans);font-size:14px;padding:10px 14px 10px 38px;border:1px solid var(--line2);border-radius:10px;background:var(--paper2);color:var(--ink);outline:none;transition:border-color .15s}
+.tsearch input:focus{border-color:var(--rust)}
+.tsearch svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--ink3)}
+.toggle{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink2);cursor:pointer;user-select:none;white-space:nowrap}
+.switch{width:42px;height:24px;border-radius:999px;background:var(--line2);position:relative;transition:background .2s;flex-shrink:0}
+.switch::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.toggle.on .switch{background:var(--rust)}
+.toggle.on .switch::after{left:21px}
+
+/* LEGEND */
+.legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink2);margin-bottom:34px;padding:14px 18px;background:var(--paper2);border:1px solid var(--line);border-radius:12px}
+.legend .lg{display:flex;align-items:center;gap:6px}
+.tier{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:5px;font-family:var(--display);font-size:11px;font-weight:600}
+.tier.S{background:var(--tS-bg);color:var(--tS)} .tier.A{background:var(--tA-bg);color:var(--tA)}
+.tier.B{background:var(--tB-bg);color:var(--tB)} .tier.C{background:var(--tC-bg);color:var(--tC)}
+.tier.Z{background:var(--tZ-bg);color:var(--tZ)}
+.legend .note{margin-left:auto;color:var(--ink3);font-style:italic}
+
+/* CATEGORY */
+.cat{margin-bottom:14px;border:1px solid var(--line2);border-radius:16px;overflow:hidden;background:var(--paper2)}
+.cat-head{display:flex;align-items:center;gap:16px;padding:22px 26px;cursor:pointer;user-select:none;transition:background .15s}
+.cat-head:hover{background:#fff}
+.cat-num{font-family:var(--display);font-size:15px;font-weight:600;color:var(--rust);width:30px;flex-shrink:0}
+.cat-titles{flex:1;min-width:0}
+.cat-titles .kr{font-family:var(--serif);font-weight:700;font-size:21px;line-height:1.2}
+.cat-titles .en{font-family:var(--display);font-style:italic;font-size:13.5px;color:var(--ink3);margin-top:2px}
+.cat-count{font-size:12px;color:var(--ink3);font-family:var(--display)}
+.chev{width:20px;height:20px;stroke:var(--ink2);transition:transform .25s;flex-shrink:0}
+.cat.closed .chev{transform:rotate(-90deg)}
+.cat-body{padding:4px 26px 28px}
+.cat.closed .cat-body{display:none}
+
+/* CLUSTER */
+.cluster{padding:20px 0;border-top:1px dashed var(--line2)}
+.cluster:first-child{border-top:none}
+.cl-concept{display:flex;align-items:baseline;gap:10px;margin-bottom:13px;flex-wrap:wrap}
+.cl-concept .dot{width:7px;height:7px;border-radius:50%;background:var(--rust);flex-shrink:0;align-self:center}
+.cl-concept .kr{font-family:var(--serif);font-weight:700;font-size:17px;color:var(--ink)}
+.cl-concept .gloss{font-size:13px;color:var(--ink3)}
+
+.row{display:flex;gap:12px;align-items:flex-start;margin-bottom:9px}
+.row-label{font-size:11px;font-weight:600;color:var(--ink3);width:62px;flex-shrink:0;padding-top:5px;letter-spacing:.04em}
+.chips{display:flex;gap:7px;flex-wrap:wrap;flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:8px;font-size:14px;line-height:1.3;border:1px solid var(--line2);background:#fff}
+.chip .w{font-weight:500}
+.chip .g{font-size:12px;color:var(--ink2)}
+.chip.core{border-color:var(--line2);background:var(--paper)}
+.chip.ext{border-style:solid;border-color:var(--line);background:#fff}
+.chip .tier{margin-left:-2px}
+.ant-row .chip{background:var(--paper2);border-color:var(--line)}
+.ant-row .row-label{color:var(--rust)}
+
+/* memorize mode: blur synonyms+gloss */
+body.memo .chips .g{filter:blur(5px);transition:filter .15s;cursor:pointer}
+body.memo .ext .w{filter:blur(5px);transition:filter .15s;cursor:pointer}
+body.memo .chips .g.revealed,body.memo .ext .w.revealed{filter:none}
+
+.empty{text-align:center;padding:60px 0;color:var(--ink3);font-style:italic}
+footer{margin-top:50px;padding-top:24px;border-top:1px solid var(--line2);font-size:12.5px;color:var(--ink3);line-height:1.7}
+footer b{color:var(--ink2)}
+.mark{background:var(--rust-soft)}
+@media(max-width:600px){
+  .shell{padding:0 16px 60px}
+  .toolbar .shell-inner{padding:0 16px}
+  .row{flex-direction:column;gap:4px}
+  .row-label{width:auto;padding-top:0}
+  .stripe{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="shell-inner">
+    <div class="tsearch">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" placeholder="단어, 뜻, 개념으로 검색 (예: reduce, 줄이다, 폭로)">
+    </div>
+    <div class="toggle" id="memoToggle"><span class="switch"></span><span>암기 모드</span></div>
+  </div>
+</div>
+
+<div class="shell">
+  <header class="hero">
+    <div class="stripe">SYN</div>
+    <div class="kicker">2단계 · 의미 묶음</div>
+    <h1>동의어 클러스터<span class="en">300 verbs, grouped by meaning for the civil-service exam</span></h1>
+    <p class="lede">공무원 영어 어휘 문제는 대부분 <b>동의어 치환</b> 형태로 출제됩니다. 단어를 하나씩 외우는 대신, <b>같은 의미끼리 묶어</b> 핵심 동사 + 시험 빈출 고급 동의어 + 반의어를 한 번에 익히세요. 각 단어 옆 배지는 기출 빈출 등급(<span class="tier S">S</span> 최빈출 ~ <span class="tier Z">Z</span> 미출현)이며, 기초 동사 15개는 제외했습니다.</p>
+  </header>
+
+  <div class="legend">
+    <span class="lg"><span class="tier S">S</span> 10회+</span>
+    <span class="lg"><span class="tier A">A</span> 5–9회</span>
+    <span class="lg"><span class="tier B">B</span> 3–4회</span>
+    <span class="lg"><span class="tier C">C</span> 1–2회</span>
+    <span class="lg"><span class="tier Z">Z</span> 미출현</span>
+    <span class="lg" style="border-left:1px solid var(--line2);padding-left:14px">배지 없음 = <b style="color:var(--ink2);font-weight:600">확장 어휘</b> (300 외 기출 고급 동의어)</span>
+    <span class="note">암기 모드 ON → 흐린 부분 클릭하면 정답 공개</span>
+  </div>
+
+  <div id="root"></div>
+
+  <footer>
+    <b>집계 출처</b> · 국가직·지방직 영어 기출 6회분(2024 국가직 / 2025 국가직 본·예시1차·예시2차 / 2025 지방직 / 2026 국가직). 빈출 등급은 변화형 포함 출현 횟수 기준.<br>
+    <b>학습 팁</b> · 핵심 동사(배지 있는 것)부터 확실히 잡고, 확장 어휘는 "이 단어가 나오면 = 이 뜻"으로 인식만 되면 충분합니다. 동의어 문제는 결국 "밑줄 단어 ≈ 보기 중 무엇"을 묻기 때문입니다.
+  </footer>
+</div>
+
+<script>
+const TIER={"write":"S","include":"S","ensure":"S","provide":"S","pay":"S","understand":"S","offer":"S","focus":"S","support":"S","cause":"A","increase":"A","learn":"A","share":"A","enter":"A","experience":"A","create":"A","show":"A","meet":"A","order":"A","require":"A","result":"A","change":"A","listen":"A","receive":"A","spend":"A","train":"A","lose":"A","matter":"A","send":"A","believe":"A","become":"A","free":"A","regard":"A","save":"A","achieve":"A","drive":"A","face":"A","join":"A","inform":"A","reach":"A","establish":"A","aim":"A","avoid":"A","follow":"A","seem":"A","appreciate":"A","bring":"A","hear":"A","involve":"A","might":"A","reduce":"A","shape":"A","suggest":"A","continue":"A","develop":"A","finish":"A","grow":"A","keep":"A","relate":"A","supply":"A","leave":"B","mean":"B","recommend":"B","remain":"B","report":"B","sit":"B","accept":"B","bear":"B","begin":"B","build":"B","enjoy":"B","ignore":"B","occur":"B","type":"B","allow":"B","carry":"B","control":"B","fall":"B","contribute":"B","add":"B","appear":"B","arrive":"B","complete":"B","consider":"B","destroy":"B","hold":"B","let":"B","prepare":"B","produce":"B","reveal":"B","solve":"B","stay":"B","break":"B","choose":"B","deal":"B","encourage":"B","fail":"B","fight":"B","happen":"B","hide":"B","hope":"B","pick":"B","serve":"B","stand":"B","store":"B","treat":"B","point":"B","assist":"C","base":"C","catch":"C","commit":"C","compare":"C","decide":"C","die":"C","discover":"C","divide":"C","enable":"C","explain":"C","express":"C","fit":"C","form":"C","gain":"C","generate":"C","handle":"C","launch":"C","mind":"C","miss":"C","push":"C","refer":"C","reflect":"C","spread":"C","submit":"C","turn":"C","urge":"C","assess":"C","assume":"C","consume":"C","draw":"C","promise":"C","raise":"C","represent":"C","set":"C","suffer":"C","survive":"C","acquire":"C","advise":"C","allocate":"C","answer":"C","apply":"C","arise":"C","belong":"C","blame":"C","burn":"C","care":"C","charge":"C","complain":"C","comprehend":"C","conceal":"C","confuse":"C","declare":"C","deliver":"C","depend":"C","deprive":"C","describe":"C","emerge":"C","estimate":"C","examine":"C","exclude":"C","exist":"C","forget":"C","fulfill":"C","gather":"C","hurt":"C","imagine":"C","indicate":"C","intend":"C","introduce":"C","lie":"C","maintain":"C","notice":"C","participate":"C","pass":"C","pretend":"C","put":"C","recover":"C","reject":"C","remember":"C","respond":"C","restore":"C","return":"C","stick":"C","suspect":"C","tend":"C","touch":"C","travel":"C","underestimate":"C","wear":"C","abide":"Z","admit":"Z","afford":"Z","agree":"Z","apologize":"Z","argue":"Z","assign":"Z","associate":"Z","attempt":"Z","attribute":"Z","beat":"Z","bet":"Z","bid":"Z","bite":"Z","blow":"Z","calculate":"Z","cancel":"Z","cherish":"Z","convince":"Z","count":"Z","derive":"Z","deserve":"Z","differ":"Z","disclose":"Z","discuss":"Z","dispense":"Z","dispute":"Z","distinguish":"Z","dream":"Z","drink":"Z","earn":"Z","embarrass":"Z","escalate":"Z","fear":"Z","forgive":"Z","hate":"Z","hesitate":"Z","hit":"Z","influence":"Z","lack":"Z","laugh":"Z","lend":"Z","manage":"Z","mention":"Z","ought":"Z","overcome":"Z","overlook":"Z","perform":"Z","possess":"Z","prefer":"Z","present":"Z","prevent":"Z","prohibit":"Z","pull":"Z","pursue":"Z","realize":"Z","refuse":"Z","reinforce":"Z","remove":"Z","rest":"Z","seek":"Z","sell":"Z","settle":"Z","sew":"Z","shake":"Z","shoot":"Z","shut":"Z","sink":"Z","slide":"Z","slip":"Z","soak":"Z","sort":"Z","spill":"Z","steal":"Z","strike":"Z","succeed":"Z","suppose":"Z","throw":"Z","transport":"Z","undergo":"Z","vanish":"Z","vary":"Z","violate":"Z","watch":"Z","wish":"Z","worry":"Z","yell":"Z","yield":"Z"};
+
+const CATS=[
+{num:"01",kr:"증가 · 감소 · 변화",en:"Growth, Reduction & Change",clusters:[
+ {concept:"늘리다 · 증가시키다",gloss:"raise the amount",core:["increase","raise","grow","escalate"],ext:[["boost","끌어올리다"],["enhance","향상시키다"],["augment","증대시키다"],["amplify","증폭시키다"],["surge","급증하다"],["soar","치솟다"]],ant:[["diminish","감소시키다"],["decrease",""]]},
+ {concept:"줄이다 · 축소하다",gloss:"make smaller",core:["reduce"],ext:[["decrease","감소하다"],["diminish","줄이다"],["lessen","줄이다"],["curtail","단축·삭감하다"],["mitigate","완화하다"],["alleviate","경감하다"],["abate","약해지다"]],ant:[["amplify","증폭시키다"]]},
+ {concept:"바꾸다 · 변형하다",gloss:"make different",core:["change","vary","shape","form"],ext:[["alter","바꾸다"],["modify","수정하다"],["transform","변형시키다"],["adjust","조정하다"],["amend","개정하다"],["revise","개정하다"],["convert","전환하다"]],ant:[["maintain","유지하다"],["preserve","보존하다"]]},
+ {concept:"발전 · 성장하다",gloss:"grow / advance",core:["develop","grow","emerge"],ext:[["evolve","진화하다"],["advance","발전하다"],["progress","진보하다"],["flourish","번성하다"],["thrive","번창하다"],["mature","성숙하다"]],ant:[["decline","쇠퇴하다"],["deteriorate","악화되다"]]},
+]},
+{num:"02",kr:"사고 · 인식 · 판단",en:"Thinking, Perception & Judgment",clusters:[
+ {concept:"생각하다 · 추정하다",gloss:"suppose / believe",core:["assume","suppose","believe","consider"],ext:[["presume","추정하다"],["speculate","추측하다"],["surmise","짐작하다"],["postulate","상정하다"],["deem","~로 여기다"],["reckon","생각하다"]]},
+ {concept:"평가하다 · 가늠하다",gloss:"judge the value",core:["assess","estimate","regard"],ext:[["evaluate","평가하다"],["appraise","감정하다"],["gauge","측정하다"],["rate","평가하다"],["value","평가하다"],["weigh","따져보다"]]},
+ {concept:"깨닫다 · 인식하다",gloss:"understand / grasp",core:["realize","comprehend","understand","notice"],ext:[["recognize","인식하다"],["perceive","인지하다"],["grasp","파악하다"],["discern","식별하다"],["apprehend","이해하다"],["acknowledge","인정하다"]]},
+ {concept:"고려하다 · 숙고하다",gloss:"think over",core:["consider","regard"],ext:[["contemplate","심사숙고하다"],["ponder","곰곰이 생각하다"],["deliberate","숙고하다"],["mull over","곱씹다"],["weigh","따져보다"]],ant:[["overlook","간과하다"]]},
+ {concept:"의도하다 · 작정하다",gloss:"plan / mean to",core:["intend","aim","mean"],ext:[["purpose","의도하다"],["plan",""],["propose","~할 작정이다"],["contemplate","~하려고 생각하다"]]},
+]},
+{num:"03",kr:"의사소통",en:"Communication",clusters:[
+ {concept:"알리다 · 통지하다",gloss:"tell / notify",core:["inform","advise","report","declare","mention","answer","respond"],ext:[["notify","통지하다"],["apprise","알리다"],["announce","발표하다"],["state","진술하다"]]},
+ {concept:"주장하다 · 논쟁하다",gloss:"argue / claim",core:["argue","maintain","dispute"],ext:[["assert","단언하다"],["contend","주장하다"],["insist","고집하다"],["allege","주장하다"],["claim","주장하다"],["refute","반박하다"],["rebut","반박하다"]]},
+ {concept:"설명하다 · 묘사하다",gloss:"explain / describe",core:["explain","describe","express"],ext:[["clarify","명확히 하다"],["elucidate","설명하다"],["illustrate","예시로 설명하다"],["depict","묘사하다"],["portray","그려내다"],["articulate","분명히 말하다"]]},
+ {concept:"시사하다 · 암시하다",gloss:"hint / point to",core:["indicate","suggest","reflect","show"],ext:[["imply","암시하다"],["denote","나타내다"],["signify","의미하다"],["connote","함축하다"],["allude to","넌지시 말하다"],["demonstrate","입증하다"]]},
+ {concept:"드러내다 · 폭로하다",gloss:"reveal / expose",core:["reveal","disclose","discover"],ext:[["expose","폭로하다"],["divulge","누설하다"],["unveil","밝히다"],["uncover","적발하다"],["manifest","명백히 보여주다"]],ant:[["conceal","감추다"],["hide",""]]},
+ {concept:"언급하다 · 참조하다",gloss:"mention / refer",core:["mention","refer"],ext:[["cite","인용하다"],["quote","인용하다"],["note","언급하다"],["allude to","넌지시 언급하다"]]},
+]},
+{num:"04",kr:"행동 · 실행 · 성취",en:"Action, Execution & Achievement",clusters:[
+ {concept:"수행하다 · 실행하다",gloss:"carry out",core:["perform","fulfill","conduct"],ext:[["execute","실행하다"],["carry out","수행하다"],["implement","시행하다"],["undertake","착수하다"],["administer","집행하다"]]},
+ {concept:"시작하다 · 착수하다",gloss:"begin / launch",core:["begin","launch","enter"],ext:[["initiate","개시하다"],["commence","시작하다"],["embark on","착수하다"],["instigate","부추겨 시작하다"],["set out","나서다"]]},
+ {concept:"끝내다 · 완료하다",gloss:"finish / complete",core:["finish","complete","fulfill"],ext:[["conclude","마무리하다"],["accomplish","완수하다"],["terminate","종료하다"],["finalize","최종 마무리하다"],["wrap up","마무리하다"]]},
+ {concept:"계속하다 · 지속하다",gloss:"continue / persist",core:["continue","remain","maintain","keep"],ext:[["persist","지속되다"],["proceed","계속 진행하다"],["persevere","끈기있게 하다"],["sustain","지속시키다"],["carry on","계속하다"]],ant:[["cease","중단하다"],["halt","멈추다"]]},
+ {concept:"성취하다 · 달성하다",gloss:"achieve a goal",core:["achieve","fulfill","reach","realize","gain"],ext:[["attain","달성하다"],["accomplish","성취하다"],["secure","확보하다"],["procure","획득하다"]]},
+]},
+{num:"05",kr:"통제 · 제한 · 허용",en:"Control, Restriction & Permission",clusters:[
+ {concept:"금지하다 · 막다",gloss:"prevent / forbid",core:["prohibit","prevent","avoid","ban"],ext:[["forbid","금하다"],["bar","막다"],["deter","단념시키다"],["hinder","방해하다"],["impede","지연시키다"],["hamper","방해하다"],["curb","억제하다"],["restrain","제지하다"]],ant:[["permit","허가하다"],["allow",""]]},
+ {concept:"허락하다 · 허용하다",gloss:"allow / permit",core:["allow","enable","let"],ext:[["permit","허가하다"],["authorize","인가하다"],["sanction","승인하다"],["grant","부여하다"],["license","허가하다"]]},
+ {concept:"거절하다 · 거부하다",gloss:"refuse / reject",core:["refuse","reject"],ext:[["decline","정중히 거절하다"],["deny","부인·거부하다"],["repudiate","거부하다"],["rebuff","퇴짜놓다"],["turn down","거절하다"],["dismiss","묵살하다"]],ant:[["accept","받아들이다"]]},
+ {concept:"동의하다 · 승인하다",gloss:"agree / approve",core:["agree","accept"],ext:[["approve","승인하다"],["consent","동의하다"],["assent","찬성하다"],["comply","따르다"],["endorse","지지하다"],["ratify","비준하다"]],ant:[["object","반대하다"]]},
+ {concept:"요구하다 · 요청하다",gloss:"require / demand",core:["require","order"],ext:[["demand","요구하다"],["request","요청하다"],["necessitate","필요로 하다"],["call for","요구하다"],["entail","수반하다"]]},
+]},
+{num:"06",kr:"획득 · 제공 · 분배",en:"Acquisition, Provision & Distribution",clusters:[
+ {concept:"얻다 · 획득하다",gloss:"obtain / acquire",core:["acquire","gain","earn","receive"],ext:[["obtain","획득하다"],["procure","입수하다"],["secure","확보하다"],["attain","획득하다"],["garner","모으다"]],ant:[["lose","잃다"],["forfeit","상실하다"]]},
+ {concept:"제공하다 · 공급하다",gloss:"provide / supply",core:["provide","supply","offer","deliver","dispense"],ext:[["furnish","제공하다"],["render","주다"],["endow","부여하다"],["grant","수여하다"]]},
+ {concept:"분배하다 · 할당하다",gloss:"allot / distribute",core:["allocate","assign","share","divide"],ext:[["distribute","분배하다"],["allot","할당하다"],["apportion","배분하다"],["dispense","나눠주다"]]},
+ {concept:"모으다 · 수집하다",gloss:"gather / collect",core:["gather"],ext:[["collect","모으다"],["assemble","집합시키다"],["accumulate","축적하다"],["compile","편집·수집하다"],["amass","축적하다"]],ant:[["scatter","흩뜨리다"],["disperse","분산시키다"]]},
+ {concept:"빼앗다 · 박탈하다",gloss:"deprive / strip",core:["deprive"],ext:[["strip","박탈하다"],["divest","빼앗다"],["dispossess","빼앗다"],["confiscate","몰수하다"]],ant:[["bestow","수여하다"]]},
+]},
+{num:"07",kr:"유지 · 지지 · 회복",en:"Maintenance, Support & Recovery",clusters:[
+ {concept:"유지하다 · 보존하다",gloss:"keep / preserve",core:["maintain","keep","remain"],ext:[["retain","유지하다"],["preserve","보존하다"],["sustain","지속시키다"],["uphold","유지하다"],["conserve","보존하다"]]},
+ {concept:"지지하다 · 지원하다",gloss:"support / back",core:["support"],ext:[["back","지지하다"],["advocate","옹호하다"],["endorse","지지하다"],["champion","옹호하다"],["bolster","강화하다"],["uphold","옹호하다"]],ant:[["oppose","반대하다"]]},
+ {concept:"강화하다 · 보강하다",gloss:"strengthen",core:["reinforce"],ext:[["strengthen","강화하다"],["bolster","북돋우다"],["fortify","강화하다"],["consolidate","공고히 하다"],["enhance","향상시키다"]],ant:[["weaken","약화시키다"],["undermine","약화시키다"]]},
+ {concept:"회복하다 · 복원하다",gloss:"recover / restore",core:["recover","restore"],ext:[["regain","되찾다"],["retrieve","되찾다"],["revive","회복시키다"],["rehabilitate","재활시키다"],["reclaim","되찾다"]]},
+ {concept:"보장하다 · 확실히 하다",gloss:"ensure / guarantee",core:["ensure"],ext:[["guarantee","보장하다"],["secure","확보하다"],["assure","확언하다"],["warrant","보증하다"],["certify","증명하다"]]},
+]},
+{num:"08",kr:"발생 · 파괴 · 소멸",en:"Occurrence, Destruction & Disappearance",clusters:[
+ {concept:"발생하다 · 일어나다",gloss:"occur / arise",core:["occur","arise","happen","emerge","result"],ext:[["take place","일어나다"],["ensue","뒤따르다"],["transpire","발생하다"],["stem from","~에서 비롯되다"]]},
+ {concept:"파괴하다 · 없애다",gloss:"destroy / ruin",core:["destroy"],ext:[["demolish","철거하다"],["devastate","황폐화하다"],["annihilate","전멸시키다"],["ruin","파괴하다"],["obliterate","없애버리다"],["eradicate","근절하다"],["wipe out","쓸어버리다"]]},
+ {concept:"사라지다 · 소멸하다",gloss:"vanish / fade",core:["vanish"],ext:[["disappear","사라지다"],["fade","희미해지다"],["evaporate","증발하다"],["dissipate","흩어지다"],["dwindle","점점 줄다"],["perish","소멸하다"]],ant:[["emerge","나타나다"]]},
+ {concept:"제외하다 · 배제하다",gloss:"exclude / remove",core:["exclude","remove"],ext:[["eliminate","제거하다"],["omit","생략하다"],["exempt","면제하다"],["preclude","배제하다"],["rule out","배제하다"]],ant:[["include","포함하다"]]},
+]},
+{num:"09",kr:"감정 · 태도",en:"Emotion & Attitude",clusters:[
+ {concept:"격려하다 · 촉구하다",gloss:"encourage / urge",core:["encourage","urge"],ext:[["prompt","촉발하다"],["spur","박차를 가하다"],["stimulate","자극하다"],["motivate","동기부여하다"],["foster","조성하다"],["inspire","고무하다"],["instigate","부추기다"]],ant:[["discourage","의욕을 꺾다"]]},
+ {concept:"칭찬하다 · 소중히 여기다",gloss:"praise / cherish",core:["appreciate","cherish"],ext:[["praise","칭찬하다"],["commend","칭찬하다"],["applaud","칭찬하다"],["acclaim","칭송하다"],["laud","찬양하다"],["esteem","존중하다"]],ant:[["belittle","깎아내리다"]]},
+ {concept:"비난하다 · 탓하다",gloss:"blame / condemn",core:["blame"],ext:[["criticize","비판하다"],["condemn","규탄하다"],["accuse","고발하다"],["denounce","비난하다"],["censure","견책하다"],["reproach","책망하다"]]},
+ {concept:"무시하다 · 간과하다",gloss:"ignore / overlook",core:["ignore","overlook"],ext:[["disregard","무시하다"],["neglect","소홀히 하다"],["dismiss","묵살하다"],["slight","경시하다"],["brush aside","무시하다"]]},
+ {concept:"두려워하다 · 망설이다",gloss:"fear / hesitate",core:["fear","hesitate","worry"],ext:[["dread","몹시 두려워하다"],["waver","흔들리다"],["vacillate","망설이다"],["falter","머뭇거리다"],["recoil","움츠리다"]]},
+ {concept:"싫어하다 · 혐오하다",gloss:"hate / detest",core:["hate"],ext:[["detest","몹시 싫어하다"],["loathe","혐오하다"],["despise","경멸하다"],["abhor","질색하다"],["disdain","멸시하다"]],ant:[["adore","아주 좋아하다"]]},
+]},
+{num:"10",kr:"극복 · 인내 · 시도",en:"Overcoming, Endurance & Attempt",clusters:[
+ {concept:"극복하다 · 이기다",gloss:"overcome / conquer",core:["overcome","beat"],ext:[["conquer","정복하다"],["surmount","극복하다"],["prevail over","이겨내다"],["triumph over","승리하다"],["defeat","물리치다"]]},
+ {concept:"견디다 · 인내하다",gloss:"endure / withstand",core:["bear","survive","suffer","undergo"],ext:[["endure","견디다"],["withstand","버티다"],["tolerate","참다"],["sustain","견디다"],["weather","견뎌내다"],["put up with","참고 견디다"]]},
+ {concept:"시도하다 · 노력하다",gloss:"attempt / strive",core:["attempt","seek","pursue"],ext:[["strive","애쓰다"],["endeavor","노력하다"],["undertake","착수하다"],["venture","과감히 시도하다"]]},
+]},
+{num:"11",kr:"구별 · 비교 · 관련",en:"Distinction, Comparison & Relation",clusters:[
+ {concept:"구별하다 · 식별하다",gloss:"distinguish",core:["distinguish","differ"],ext:[["differentiate","구별하다"],["discern","식별하다"],["discriminate","구별하다"],["tell apart","구분하다"],["set apart","구별하다"]]},
+ {concept:"비교하다 · 대조하다",gloss:"compare / contrast",core:["compare"],ext:[["contrast","대조하다"],["liken","비유하다"],["juxtapose","병치하다"],["equate","동일시하다"]]},
+ {concept:"관련시키다 · 연결하다",gloss:"relate / connect",core:["relate","associate","join","link"],ext:[["connect","연결하다"],["correlate","상관관계가 있다"],["affiliate","제휴하다"],["couple","결합하다"],["tie","결부시키다"]]},
+ {concept:"다양하다 · 달라지다",gloss:"vary / differ",core:["vary","differ"],ext:[["diverge","갈라지다"],["range","범위에 걸치다"],["fluctuate","변동하다"]]},
+]},
+{num:"12",kr:"실용 · 일상 동작",en:"Practical & Everyday Actions",clusters:[
+ {concept:"조사하다 · 검사하다",gloss:"examine / inspect",core:["examine"],ext:[["inspect","점검하다"],["investigate","조사하다"],["scrutinize","면밀히 살피다"],["survey","조사하다"],["probe","캐다"],["audit","감사하다"]]},
+ {concept:"선택하다 · 고르다",gloss:"choose / select",core:["choose","pick"],ext:[["select","선택하다"],["opt for","택하다"],["elect","택하다"],["designate","지정하다"]]},
+ {concept:"추천하다 · 제안하다",gloss:"recommend / propose",core:["recommend","suggest","advise"],ext:[["propose","제안하다"],["advocate","옹호하다"],["put forward","제시하다"]]},
+ {concept:"결정하다 · 해결하다",gloss:"decide / resolve",core:["decide","settle","solve"],ext:[["determine","결정하다"],["resolve","해결하다"],["conclude","결론짓다"],["adjudicate","판결하다"]]},
+ {concept:"다루다 · 처리하다",gloss:"handle / cope with",core:["handle","manage","treat","deal"],ext:[["cope with","대처하다"],["address","다루다"],["tackle","씨름하다"],["administer","관리하다"]]},
+ {concept:"잡다 · 쥐다",gloss:"catch / grasp",core:["catch","hold","stick"],ext:[["seize","붙잡다"],["grasp","움켜잡다"],["grip","꽉 쥐다"],["capture","포획하다"],["snatch","낚아채다"],["cling to","매달리다"]]},
+ {concept:"움직이다 · 옮기다",gloss:"move / shift",core:["carry","transport","push","pull","draw","turn"],ext:[["convey","나르다"],["transfer","이전하다"],["shift","옮기다"],["propel","추진하다"],["haul","끌어당기다"]]},
+ {concept:"동작 모음 · 신체 / 물리",gloss:"physical verbs (low exam priority)",core:["throw","shake","sink","slide","slip","soak","spill","sew","bite","blow","burn","steal","shoot","shut","yell","laugh","drink","sit","stand","lie","rest","wear","touch","hit","strike"],ext:[]},
+]},
+];
+
+const root=document.getElementById('root');
+
+function chip(w,g,cls){
+  const t=TIER[w];
+  const badge=t?`<span class="tier ${t}">${t}</span>`:'';
+  const gl=g?`<span class="g">${g}</span>`:'';
+  return `<span class="chip ${cls}" data-w="${w.toLowerCase()}" data-g="${(g||'').toLowerCase()}">${badge}<span class="w">${w}</span>${gl}</span>`;
+}
+
+function render(filter){
+  filter=(filter||'').trim().toLowerCase();
+  let html='';
+  let anyVisible=false;
+  CATS.forEach((cat,ci)=>{
+    let clHtml='';
+    let catVisible=0;
+    cat.clusters.forEach(cl=>{
+      // match check
+      const hay=(cl.concept+' '+(cl.gloss||'')+' '+cl.core.join(' ')+' '+cl.ext.map(e=>e[0]+' '+(e[1]||'')).join(' ')+' '+(cl.ant||[]).map(e=>e[0]+' '+(e[1]||'')).join(' ')).toLowerCase();
+      if(filter && !hay.includes(filter)) return;
+      catVisible++;
+      let rows='';
+      rows+=`<div class="row"><div class="row-label">핵심</div><div class="chips">${cl.core.map(w=>chip(w,'','core')).join('')}</div></div>`;
+      if(cl.ext.length)
+        rows+=`<div class="row"><div class="row-label">확장</div><div class="chips">${cl.ext.map(e=>chip(e[0],e[1],'ext')).join('')}</div></div>`;
+      if(cl.ant&&cl.ant.length)
+        rows+=`<div class="row ant-row"><div class="row-label">반의어</div><div class="chips">${cl.ant.map(e=>chip(e[0],e[1],'ext')).join('')}</div></div>`;
+      clHtml+=`<div class="cluster"><div class="cl-concept"><span class="dot"></span><span class="kr">${cl.concept}</span><span class="gloss">${cl.gloss||''}</span></div>${rows}</div>`;
+    });
+    if(!catVisible) return;
+    anyVisible=true;
+    const closedAttr = '';
+    html+=`<section class="cat${closedAttr}" data-ci="${ci}">
+      <div class="cat-head">
+        <span class="cat-num">${cat.num}</span>
+        <div class="cat-titles"><div class="kr">${cat.kr}</div><div class="en">${cat.en}</div></div>
+        <span class="cat-count">${catVisible}묶음</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="cat-body">${clHtml}</div>
+    </section>`;
+  });
+  root.innerHTML = anyVisible?html:'<div class="empty">검색 결과가 없습니다 — 다른 단어나 뜻으로 시도해 보세요.</div>';
+  bindCats();
+}
+
+function bindCats(){
+  document.querySelectorAll('.cat-head').forEach(h=>{
+    h.onclick=()=>h.parentElement.classList.toggle('closed');
+  });
+}
+
+// search
+const q=document.getElementById('q');
+let timer;
+q.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>render(q.value),120);});
+
+// memorize mode
+const memoToggle=document.getElementById('memoToggle');
+memoToggle.addEventListener('click',()=>{
+  memoToggle.classList.toggle('on');
+  document.body.classList.toggle('memo');
+});
+// reveal on click in memo mode
+root.addEventListener('click',e=>{
+  if(!document.body.classList.contains('memo'))return;
+  const tgt=e.target.closest('.g, .ext .w');
+  if(tgt){tgt.classList.toggle('revealed');}
+});
+
+render('');
+</script>
+</body>
+</html>

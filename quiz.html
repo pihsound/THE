@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Quiz — Verb 300</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F3EA;--paper2:#FBF8F1;--ink:#2A2723;--ink2:#6B6358;--ink3:#9A9183;
+  --rust:#C2511F;--rust-soft:#F4E3D8;--line:#E5DCCB;--line2:#D8CDB8;
+  --ok:#0F6E56;--ok-bg:#D9EFE6;--bad:#B23B2E;--bad-bg:#F6DED9;
+  --tS:#C2511F;--tS-bg:#F6E1D6;--tA:#B5790C;--tA-bg:#F6E9CE;--tB:#0F6E56;--tB-bg:#D9EFE6;
+  --serif:'Gowun Batang',serif;--display:'Fraunces',serif;--sans:'IBM Plex Sans KR',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--line) 0.5px,transparent 0.5px);background-size:22px 22px;min-height:100vh}
+.shell{max-width:760px;margin:0 auto;padding:0 22px 64px}
+.kicker{font-family:var(--display);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--rust);font-weight:600}
+.btn{font-family:var(--sans);font-size:15px;font-weight:500;padding:13px 22px;border-radius:12px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;transition:transform .1s,opacity .15s}
+.btn:hover{opacity:.9}.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+.btn.ghost:hover{background:#fff;opacity:1}
+
+/* ===== START SCREEN ===== */
+#start{padding:54px 0}
+#start h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,6vw,54px);line-height:1.06;margin:16px 0 8px}
+#start h1 .en{display:block;font-family:var(--display);font-style:italic;font-weight:400;color:var(--ink2);font-size:.42em;margin-top:12px}
+#start .lede{color:var(--ink2);max-width:540px;margin-bottom:34px;font-size:15px;line-height:1.7}
+.opt-group{margin-bottom:26px}
+.opt-group>.label{font-size:12.5px;font-weight:600;color:var(--ink3);letter-spacing:.05em;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.opt-group>.label .ln{flex:1;height:1px;background:var(--line2)}
+.choices{display:flex;gap:10px;flex-wrap:wrap}
+.choice{flex:1;min-width:130px;padding:14px 16px;border:1.5px solid var(--line2);border-radius:13px;background:var(--paper2);cursor:pointer;transition:all .15s}
+.choice:hover{border-color:var(--ink3)}
+.choice.sel{border-color:var(--rust);background:#fff;box-shadow:0 0 0 3px var(--rust-soft)}
+.choice .t{font-family:var(--serif);font-weight:700;font-size:16px}
+.choice .d{font-size:12px;color:var(--ink2);margin-top:3px}
+.choice .n{font-family:var(--display);font-size:12px;color:var(--rust);margin-top:6px;font-weight:600}
+.toggles{display:flex;gap:10px;flex-wrap:wrap}
+.tg{display:flex;align-items:center;gap:9px;padding:11px 15px;border:1.5px solid var(--line2);border-radius:12px;cursor:pointer;font-size:13.5px;color:var(--ink2);user-select:none;background:var(--paper2)}
+.tg .sw{width:38px;height:22px;border-radius:999px;background:var(--line2);position:relative;transition:.2s;flex-shrink:0}
+.tg .sw::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.tg.on{border-color:var(--rust);color:var(--ink)}.tg.on .sw{background:var(--rust)}.tg.on .sw::after{left:19px}
+#startBtn{margin-top:8px;width:100%;font-size:16px;padding:16px}
+
+/* ===== QUIZ SCREEN ===== */
+#quiz{display:none;padding:24px 0}
+.qbar{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.progress{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress .fill{height:100%;background:var(--rust);width:0;transition:width .3s}
+.qstats{display:flex;gap:16px;font-size:13px;color:var(--ink2);font-family:var(--display);font-weight:500}
+.qstats b{color:var(--ink)}
+.timer-wrap{height:4px;background:transparent;border-radius:99px;margin:10px 0 22px;overflow:hidden}
+.timer-wrap.show{background:var(--line)}
+.timer-wrap .tfill{height:100%;background:var(--tA);width:100%}
+
+.card{background:var(--paper2);border:1.5px solid var(--line2);border-radius:20px;padding:34px 30px;margin-bottom:18px;position:relative}
+.qtier{position:absolute;top:18px;right:20px;font-family:var(--display);font-size:12px;font-weight:600;padding:3px 9px;border-radius:7px}
+.qtier.S{background:var(--tS-bg);color:var(--tS)}.qtier.A{background:var(--tA-bg);color:var(--tA)}.qtier.B{background:var(--tB-bg);color:var(--tB)}
+.qword{font-family:var(--display);font-size:clamp(40px,8vw,60px);font-weight:600;letter-spacing:-.02em;line-height:1}
+.qprompt{font-size:13px;color:var(--ink3);margin-top:14px}
+.qsent{margin-top:20px;padding:16px 18px;background:#fff;border-left:3px solid var(--rust-soft);border-radius:0 10px 10px 0;font-size:15px;line-height:1.7;color:var(--ink2);font-family:var(--serif)}
+.qsent .hl{background:var(--rust-soft);color:var(--ink);font-weight:700;padding:0 3px;border-radius:3px}
+.qsent.hidden{display:none}
+.qsent .tag{display:block;font-family:var(--sans);font-size:11px;color:var(--ink3);margin-bottom:6px;letter-spacing:.04em}
+
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ans{padding:16px 18px;border:1.5px solid var(--line2);border-radius:13px;background:var(--paper2);cursor:pointer;font-size:15px;text-align:left;transition:all .12s;font-family:var(--sans);color:var(--ink)}
+.ans:hover{border-color:var(--ink3);background:#fff}
+.ans:disabled{cursor:default}
+.ans.correct{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);font-weight:600}
+.ans.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.ans .k{font-family:var(--display);font-size:12px;color:var(--ink3);margin-right:8px;font-weight:600}
+.nextbar{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.feedback{font-size:14px;font-weight:500}
+.feedback.ok{color:var(--ok)}.feedback.bad{color:var(--bad)}
+
+/* ===== RESULT SCREEN ===== */
+#result{display:none;padding:40px 0}
+#result h2{font-family:var(--serif);font-weight:700;font-size:34px;margin-bottom:6px}
+.score-big{font-family:var(--display);font-size:72px;font-weight:600;color:var(--rust);line-height:1;margin:18px 0 6px}
+.score-sub{color:var(--ink2);font-size:15px;margin-bottom:30px}
+.metrics{display:flex;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.metric{flex:1;min-width:120px;background:var(--paper2);border:1px solid var(--line2);border-radius:14px;padding:16px 18px}
+.metric .l{font-size:12px;color:var(--ink3)}
+.metric .v{font-family:var(--display);font-size:26px;font-weight:600;margin-top:3px}
+.missed{margin-bottom:30px}
+.missed h3{font-family:var(--serif);font-weight:700;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.missed .badge{background:var(--bad-bg);color:var(--bad);font-size:12px;padding:2px 9px;border-radius:99px;font-family:var(--display);font-weight:600}
+.misslist{display:flex;flex-direction:column;gap:7px}
+.missrow{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--paper2);border:1px solid var(--line);border-radius:11px}
+.missrow .w{font-family:var(--display);font-size:16px;font-weight:600;min-width:120px}
+.missrow .m{font-size:14px;color:var(--ink2)}
+.result-actions{display:flex;gap:11px;flex-wrap:wrap}
+.perfect{text-align:center;padding:20px;color:var(--ok);font-family:var(--serif);font-size:18px;font-weight:700}
+@media(max-width:560px){.answers{grid-template-columns:1fr}.shell{padding:0 16px 50px}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- START -->
+  <section id="start">
+    <div class="kicker">3단계 · 기출 스피드 퀴즈</div>
+    <h1>실전 문맥 퀴즈<span class="en">Speed quiz with real exam sentences</span></h1>
+    <p class="lede">기출 6회분에서 추출한 <b>실제 문장</b> 속에서 동사의 뜻을 맞히세요. 틀린 단어는 자동으로 다시 출제됩니다. 기초 동사를 뺀 빈출 우선 동사 <b id="poolN">106</b>개가 풀입니다.</p>
+
+    <div class="opt-group">
+      <div class="label">퀴즈 유형<span class="ln"></span></div>
+      <div class="choices" id="modeChoices">
+        <div class="choice sel" data-mode="meaning"><div class="t">뜻 맞히기</div><div class="d">단어 → 한국어 뜻</div></div>
+        <div class="choice" data-mode="synonym"><div class="t">동의어 고르기</div><div class="d">단어 → 같은 뜻의 영단어</div></div>
+      </div>
+    </div>
+
+    <div class="opt-group">
+      <div class="label">출제 범위<span class="ln"></span></div>
+      <div class="choices" id="scopeChoices">
+        <div class="choice sel" data-scope="SA"><div class="t">S · A 등급</div><div class="d">최빈출 핵심만</div><div class="n" id="nSA">– 문항</div></div>
+        <div class="choice" data-scope="SAB"><div class="t">S · A · B</div><div class="d">빈출 우선 전체</div><div class="n" id="nSAB">– 문항</div></div>
+        <div class="choice" data-scope="B"><div class="t">B 등급만</div><div class="d">중빈출 집중</div><div class="n" id="nB">– 문항</div></div>
+      </div>
+    </div>
+
+    <div class="opt-group">
+      <div class="label">문항 수<span class="ln"></span></div>
+      <div class="choices" id="countChoices">
+        <div class="choice sel" data-count="10"><div class="t">10문항</div><div class="d">빠른 점검</div></div>
+        <div class="choice" data-count="20"><div class="t">20문항</div><div class="d">표준</div></div>
+        <div class="choice" data-count="0"><div class="t">전체</div><div class="d">범위 전부</div></div>
+      </div>
+    </div>
+
+    <div class="opt-group">
+      <div class="label">옵션<span class="ln"></span></div>
+      <div class="toggles">
+        <div class="tg on" id="tgSent"><span class="sw"></span><span>예문 보기</span></div>
+        <div class="tg" id="tgTimer"><span class="sw"></span><span>타이머 (8초)</span></div>
+      </div>
+    </div>
+
+    <button class="btn" id="startBtn">퀴즈 시작 →</button>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz">
+    <div class="qbar">
+      <div class="progress"><div class="fill" id="pfill"></div></div>
+      <div class="qstats"><span>점수 <b id="sScore">0</b></span><span>연속 <b id="sStreak">0</b></span><span><b id="sIdx">0</b>/<b id="sTot">0</b></span></div>
+    </div>
+    <div class="timer-wrap" id="timerWrap"><div class="tfill" id="tfill"></div></div>
+
+    <div class="card">
+      <span class="qtier" id="qtier">A</span>
+      <div class="qword" id="qword">word</div>
+      <div class="qprompt" id="qprompt">이 단어의 뜻은?</div>
+      <div class="qsent" id="qsent"><span class="tag">기출 예문</span><span id="qsentText"></span></div>
+    </div>
+
+    <div class="answers" id="answers"></div>
+
+    <div class="nextbar">
+      <span class="feedback" id="feedback"></span>
+      <button class="btn ghost" id="nextBtn" style="display:none">다음 →</button>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result">
+    <div class="kicker">결과</div>
+    <h2>수고했어요!</h2>
+    <div class="score-big" id="rScore">0%</div>
+    <div class="score-sub" id="rSub"></div>
+    <div class="metrics">
+      <div class="metric"><div class="l">정답</div><div class="v" id="rCorrect" style="color:var(--ok)">0</div></div>
+      <div class="metric"><div class="l">오답</div><div class="v" id="rWrong" style="color:var(--bad)">0</div></div>
+      <div class="metric"><div class="l">최고 연속</div><div class="v" id="rBest">0</div></div>
+    </div>
+    <div class="missed" id="missedBox">
+      <h3>다시 볼 단어 <span class="badge" id="missCount">0</span></h3>
+      <div class="misslist" id="misslist"></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn" id="retryWrong" style="display:none">틀린 단어만 다시 →</button>
+      <button class="btn ghost" id="restart">처음으로</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const DATA=[["write", "쓰다, 작성하다", "S", "B: No, that was written by May Lee.", "written"], ["include", "포함하다", "S", "Your idea to include eastern and western cultural contents was unique and interesting.", "include"], ["ensure", "반드시 ~하게 하다, 보장하다", "S", "The OLC takes enforcement action when necessary to ensure that workers are treated fairly and compensated for all time worked.", "ensure"], ["provide", "제공하다, 공급하다", "S", "I would gladly provide any additional information if needed.", "provide"], ["pay", "지불하다, 납부하다", "S", "Our department may not be able to pay within two weeks.", "pay"], ["understand", "이해하다, 알아듣다", "S", "We don't understand it, so we don't trust it.", "understand"], ["offer", "제의하다, 제공하다", "S", "It offers visitors cultural events on a regular basis.", "offers"], ["focus", "집중하다, 초점을 맞추다", "S", "Educational experts need to focus on new school policies.", "focus"], ["support", "지지하다, 지원하다", "S", "The camp includes individual artistic support for children ages 6 -", "support"], ["cause", "~을 야기하다", "A", "We like to see cause and effect, and we like being able to interrogate decisions.", "cause"], ["increase", "증가하다, 늘리다", "A", "If we increase our speed on most tasks, we generally lose accuracy; to increase precision, we must slow down.", "increase"], ["learn", "배우다, 학습하다", "A", "Come learn what is being done and how you can help.", "learn"], ["share", "공유하다, 나누다", "A", "Anything you can share about your decision timeline or any next steps would be greatly appreciated.", "share"], ["enter", "들어가다, 시작하다", "A", "Use the new Enter-K app upon your arrival at the airport.", "enter"], ["experience", "경험하다, 겪다", "A", "We invite you to experience this legacy and hear the enduring calls for peace in a scenic rural setting.", "experience"], ["create", "창조하다, 만들다", "A", "The Theban plays were created in time order.", "created"], ["show", "보여주다, 증명하다", "A", "Rare airline and transportation collectibles will be displayed at the show.", "show"], ["meet", "만나다, 모이다", "A", "They are having a special meeting to tell you about it.", "meeting"], ["order", "명령하다, 주문하다", "A", "", ""], ["require", "필요로 하다, 요구하다", "A", "Core Values Honesty & Integrity: We expect and require complete honesty and integrity in all we do.", "require"], ["result", "발생하다, 생기다", "A", "Falling fertility rates are projected to result in shrinking populations for nearly every country by the end of the century.", "result"], ["change", "변하다, 바꾸다", "A", "New and changed business models are emerged: cars are being shared via apps, languages learned online, and music streamed.", "changed"], ["listen", "듣다, 경청하다", "A", "That's where active listening techniques come into play.", "listening"], ["spend", "(돈을) 쓰다, (시간을) 보내다", "A", "Outdoor activities make it difficult for them to spend quality time with their family.", "spend"], ["train", "교육하다, 훈련하다", "A", "Unless you train yourself to remain vigilant, the brain usually ends up paying attention to the noise in your own head.", "train"], ["lose", "잃어버리다, 빼앗기다", "A", "If we increase our speed on most tasks, we generally lose accuracy; to increase precision, we must slow down.", "lose"], ["matter", "중요하다, 문제되다", "A", "", ""], ["send", "보내다, 발송하다", "A", "We'll send them to your department right away.", "send"], ["believe", "믿다, 생각하다", "A", "Many experts believe that AI will completely replace all human jobs within the next decade.", "believe"], ["become", "~이 되다", "A", "On the whole, men did not choose to become outlaws; they were made outlaws.", "become"], ["free", "석방하다, 풀어주다", "A", "One can do research in the Library research room for free.", "free"], ["regard", "여기다, 간주하다", "A", "The tragedies of the Greek dramatist Sophocles have come to be regarded as the high point of classical Greek drama.", "regarded"], ["save", "구하다, 저축하다", "A", "Some dedicated people are working to save it now.", "save"], ["achieve", "달성하다, 성취하다", "A", "HHS acts independently from other federal departments and agencies to achieve its goals.", "achieve"], ["drive", "몰다, 운전하다", "A", "To appease critics, the wireless industry has launched a $ 12 million public-education campaign on the drive-time radio.", "drive"], ["face", "~을 마주보다, 직면하다", "A", "Additionally, safeguarding workers' rights in the face of AI integration and ensuring inclusive labour markets become paramount.", "face"], ["join", "연결하다, 가입하다", "A", "", ""], ["inform", "알리다, 통지하다", "A", "", ""], ["reach", "도달하다, ~에 이르다", "A", "By the time I reached home, the loaves had cooled somewhat, but the insides were still warm.", "reached"], ["establish", "설립하다, 수립하다", "A", "It aims to establish a solid national energy cooperation system.", "establish"], ["aim", "목표하다, 겨누다", "A", "The NHC aims to promote health and serve the vulnerable.", "aims"], ["avoid", "피하다, 막다", "A", "Perhaps, the most telling trend to date is conscious unbossing or the practice of avoiding management roles.", "avoiding"], ["follow", "따라가다, 뒤를 잇다", "A", "I would like to follow up now to see if there are any updates regarding the status of my application.", "follow"], ["seem", "~인 것 같다, ~처럼 보이다", "A", "It seems to me that any international organization designed to keep the peace must have the power not merely to talk but also to act.", "seems"], ["appreciate", "진가를 알아보다, 인정하다", "A", "Thank you for your attention to this matter, and I appreciate your prompt response to help restore the tranquility in our neighborhood.", "appreciate"], ["bring", "가져오다, 야기하다", "A", "Bring this confirmation — printed or on smart device — as proof of purchase.", "bring"], ["hear", "듣다, 들리다", "A", "We invite you to experience this legacy and hear the enduring calls for peace in a scenic rural setting.", "hear"], ["involve", "수반하다, 관련시키다", "A", "They were then asked to describe in as much detail as possible all the steps involved in the zipper's operation.", "involved"], ["might", "~일 수도 있다 (가능성)", "A", "But by getting aggressive, they might not only damage their relationships but also miss the chance of growing through constructive feedback.", "might"], ["reduce", "줄이다, 축소하다", "A", "Inevitably, those high prices eat into economic growth and reduce demand just as suppliers are overproducing.", "reduce"], ["shape", "형성하다, 빚다", "A", "", ""], ["suggest", "제안하다, 시사하다", "A", "AUVs are unmanned underwater robots, and as their name suggests, they operate independently of humans.", "suggests"], ["continue", "계속하다", "A", "Even though temporary repairs have been made, the problems continue.", "continue"], ["develop", "성장하다, 개발하다", "A", "A STEM consultant developed interpretive art and science lessons.", "developed"], ["finish", "끝내다, 마치다", "A", "I really have to stay healthy until I finish this project.", "finish"], ["grow", "커지다, 자라다", "A", "Scientists in the UK grew special tomatoes with extra vitamin D, which is important for people's health.", "grew"], ["keep", "유지하다, 계속하다", "A", "Keep your software and devices up to date.", "keep"], ["relate", "관련시키다, 연관하다", "A", "It displays more than a million artifacts related to the independence movement.", "related"], ["supply", "공급하다, 제공하다", "A", "Its response to energy supply disruptions focuses on long-term plans instead of immediate action.", "supply"], ["leave", "떠나다, 출발하다", "B", "I am planning to leave on May 2nd and return on May 14th.", "leave"], ["mean", "~을 뜻하다, 의미하다", "B", "Usually toddlers picking things up from the ground means trouble.", "means"], ["recommend", "추천하다, 권하다", "B", "Can you recommend a good tour guide book?", "recommend"], ["remain", "남다, 계속 ~이다", "B", "Unless you train yourself to remain vigilant, the brain usually ends up paying attention to the noise in your own head.", "remain"], ["report", "알리다, 보도하다", "B", "An investigation is triggered when report of animals with clinical signs indicative of a FAD is received or when diagnostic laboratory identifies a suspicious test result.", "report"], ["sit", "앉다", "B", "They can be content just to sit in each other's company speaking only occasionally and playing on their own.", "sit"], ["accept", "받아들이다, 수락하다", "B", "In contrast, the young child is often readily accepted by other children, and even adults.", "accepted"], ["bear", "참다, 견디다", "B", "", ""], ["begin", "시작하다", "B", "They began entering the workforce around", "began"], ["build", "짓다, 건설하다", "B", "Its goal is to build a strong energy cooperation system in our country.", "build"], ["enjoy", "즐기다, 누리다", "B", "The programs offered at the Museum can be enjoyed by everyone.", "enjoyed"], ["ignore", "무시하다, 못 본 척하다", "B", "This involves ignoring your own needs and focusing on the person speaking—a task made more difficult by the way the human brain works.", "ignoring"], ["occur", "일어나다, 발생하다", "B", "It is important to note that for adults, social interaction mainly occurs through the medium of language.", "occurs"], ["type", "타자치다, 입력하다", "B", "But many AI systems operate as black boxes: you type something in, and a decision appears.", "type"], ["allow", "허락하다, 용납하다", "B", "It allows travellers to declare customs in advance.", "allows"], ["carry", "나르다, 휴대하다", "B", "AUVs carry a variety of equipment for sampling and surveying such as cameras, sonar, and depth sensors.", "carry"], ["control", "지배하다, 규제하다", "B", "Rather, AUVs are programmed or controlled by operators who may be on a vessel or even on shore, who tell an AUV where, when, and what should be sampled.", "controlled"], ["fall", "떨어지다, 넘어지다", "B", "It is expected to fall below 1.7 by", "fall"], ["contribute", "기여하다, 기부하다", "B", "", ""], ["add", "추가하다, 합하다", "B", "Air freight costs will be added on the invoice.", "added"], ["appear", "나타나다, 생기다", "B", "But many AI systems operate as black boxes: you type something in, and a decision appears.", "appears"], ["arrive", "도착하다", "B", "Provided that the ferry leaves on time, we should arrive at the harbor by morning.", "arrive"], ["complete", "완료하다, 끝마치다", "B", "HHS does not work with foreign countries to complete its mission.", "complete"], ["consider", "고려하다, ~로 여기다", "B", "Advocates of a conspiracy cite several pieces of what they consider evidence.", "consider"], ["destroy", "파괴하다, 말살하다", "B", "Technological progress can destroy jobs in a single industry such as textiles.", "destroy"], ["hold", "잡고 있다, 유지하다", "B", "That's bad for producers, who can be left holding the bag when prices plummet, and it hurts consumers and industries uncertain about future energy prices.", "holding"], ["let", "허락하다, 시키다", "B", "Let's consider what happens when you engage in a single task like cooking dinner.", "let"], ["prepare", "준비하다, 대비하다", "B", "As OECD countries prepare for an AI revolution, underscored by rapid advancements in generative AI and an increased availability of AI-skilled workers, the landscape of employment is poised for significant change.", "prepare"], ["produce", "생산하다, 낳다", "B", "However, historical evidence shows that technological progress does not produce unemployment in a country as a whole.", "produce"], ["reveal", "드러내다, 폭로하다", "B", "Recent data reveal that marginalized students, including those from low-income back grounds and vulnerable groups, continue to lag behind their peers in academic performance.", "reveal"], ["solve", "해결하다, 풀다", "B", "We use our intellects not to solve practical problems but to outwit each other.", "solve"], ["stay", "계속 있다, 머무르다", "B", "I really have to stay healthy until I finish this project.", "stay"], ["break", "깨다, 부서지다", "B", "The camp runs with no break between June 9 and July", "break"], ["choose", "선택하다, 고르다", "B", "On the whole, men did not choose to become outlaws; they were made outlaws.", "choose"], ["deal", "다루다, 거래하다", "B", "We should deal with persistent educational inequities.", "deal"], ["encourage", "격려하다, 부추기다", "B", "When the global economy heats up, demand for oil rises, boosting the price and encouraging producers to pump more.", "encouraging"], ["fail", "실패하다, ~하지 못하다", "B", "", ""], ["fight", "싸우다, 전투하다", "B", "When conflict arises, we can often see nature's fight-or-flight response—either attacking the enemy or running away.", "fight"], ["happen", "발생하다, 일어나다", "B", "Let's consider what happens when you engage in a single task like cooking dinner.", "happens"], ["hide", "감추다, 숨다", "B", "", ""], ["hope", "바라다, 희망하다", "B", "I hope we can get the goods early next week.", "hope"], ["pick", "고르다, 뽑다", "B", "Maps can be downloaded or picked up at the Museum.", "picked"], ["serve", "제공하다, 섬기다, 봉사하다", "B", "The NHC aims to promote health and serve the vulnerable.", "serve"], ["stand", "서다, 일어서다", "B", "Obviously, no aspect of the language arts stands alone either in learning or in teaching.", "stands"], ["store", "저장하다, 보관하다", "B", "Travellers can download it from the online store.", "store"], ["treat", "대하다, 다루다, 치부하다", "B", "It takes action when employees are unfairly treated.", "treated"], ["point", "가리키다, 시사하다", "B", "They also point to the fact that the metal coverings of the spaceship were designed to block radiation.", "point"]];
+const SYN={"write": ["author", "compose", "draft", "pen"], "include": ["comprise", "contain", "encompass", "entail", "incorporate"], "ensure": ["assure", "certify", "guarantee", "secure", "warrant"], "provide": ["deliver", "dispense", "endow", "furnish", "grant", "offer", "render", "supply"], "pay": ["compensate", "reimburse", "remunerate", "settle"], "understand": ["acknowledge", "apprehend", "comprehend", "discern", "grasp", "notice", "perceive", "realize", "recognize"], "offer": ["deliver", "dispense", "endow", "furnish", "grant", "provide", "render", "supply"], "focus": ["center", "concentrate", "fixate"], "support": ["advocate", "back", "bolster", "champion", "endorse", "uphold"], "cause": ["generate", "induce", "prompt", "provoke", "trigger"], "increase": ["amplify", "augment", "boost", "enhance", "escalate", "grow", "raise", "soar", "surge"], "learn": ["acquire", "grasp", "master", "study"], "share": ["allocate", "allot", "apportion", "assign", "dispense", "distribute", "divide"], "enter": ["begin", "commence", "embark", "initiate", "instigate", "launch"], "experience": ["encounter", "sustain", "undergo"], "create": ["craft", "devise", "forge", "generate", "invent", "produce"], "show": ["connote", "demonstrate", "denote", "imply", "indicate", "reflect", "signify", "suggest"], "meet": ["assemble", "convene", "encounter", "gather"], "order": ["demand", "entail", "necessitate", "request", "require"], "require": ["demand", "entail", "necessitate", "order", "request"], "result": ["arise", "emerge", "ensue", "happen", "occur", "transpire"], "change": ["adjust", "alter", "amend", "convert", "form", "modify", "revise", "shape", "transform", "vary"], "listen": ["attend", "hear", "heed"], "receive": ["acquire", "attain", "earn", "gain", "garner", "obtain", "procure", "secure"], "spend": ["consume", "disburse", "expend"], "train": ["coach", "drill", "educate", "instruct"], "lose": ["forfeit", "mislay", "misplace"], "matter": ["count", "signify"], "send": ["dispatch", "forward", "ship", "transmit"], "believe": ["assume", "consider", "deem", "postulate", "presume", "reckon", "speculate", "suppose", "surmise"], "become": ["grow", "turn into"], "free": ["emancipate", "liberate", "release"], "regard": ["appraise", "assess", "consider", "contemplate", "deliberate", "estimate", "evaluate", "gauge", "ponder", "rate", "weigh"], "save": ["conserve", "preserve", "rescue"], "achieve": ["accomplish", "attain", "fulfill", "gain", "procure", "reach", "realize", "secure"], "drive": ["compel", "operate", "propel", "steer"], "face": ["address", "confront", "encounter", "tackle"], "join": ["affiliate", "associate", "connect", "correlate", "couple", "link", "relate"], "inform": ["advise", "announce", "answer", "apprise", "declare", "mention", "notify", "report", "respond", "state"], "reach": ["accomplish", "achieve", "attain", "fulfill", "gain", "procure", "realize", "secure"], "establish": ["create", "found", "institute", "set up"], "aim": ["contemplate", "intend", "mean", "propose", "purpose"], "avoid": ["ban", "bar", "curb", "deter", "forbid", "hamper", "hinder", "impede", "prevent", "prohibit", "restrain"], "follow": ["pursue", "succeed", "trail"], "seem": ["appear", "look"], "appreciate": ["acclaim", "applaud", "cherish", "commend", "esteem", "laud", "praise"], "bring": ["carry", "convey", "deliver", "fetch"], "hear": ["catch", "listen", "perceive"], "involve": ["encompass", "engage", "entail", "include"], "might": ["may"], "reduce": ["abate", "alleviate", "curtail", "decrease", "diminish", "lessen", "mitigate"], "shape": ["adjust", "alter", "amend", "change", "convert", "form", "modify", "revise", "transform", "vary"], "suggest": ["advise", "advocate", "connote", "demonstrate", "denote", "imply", "indicate", "propose", "recommend", "reflect", "show", "signify"], "continue": ["keep", "maintain", "persevere", "persist", "proceed", "remain", "sustain"], "develop": ["advance", "emerge", "evolve", "flourish", "grow", "mature", "progress", "thrive"], "finish": ["accomplish", "complete", "conclude", "finalize", "fulfill", "terminate"], "grow": ["advance", "amplify", "augment", "boost", "develop", "emerge", "enhance", "escalate", "evolve", "flourish", "increase", "mature", "progress", "raise", "soar", "surge", "thrive"], "keep": ["conserve", "continue", "maintain", "persevere", "persist", "preserve", "proceed", "remain", "retain", "sustain", "uphold"], "relate": ["affiliate", "associate", "connect", "correlate", "couple", "join", "link"], "supply": ["deliver", "dispense", "endow", "furnish", "grant", "offer", "provide", "render"], "leave": ["abandon", "depart", "exit", "quit"], "mean": ["aim", "contemplate", "intend", "propose", "purpose"], "recommend": ["advise", "advocate", "propose", "suggest"], "remain": ["conserve", "continue", "keep", "maintain", "persevere", "persist", "preserve", "proceed", "retain", "sustain", "uphold"], "report": ["advise", "announce", "answer", "apprise", "declare", "inform", "mention", "notify", "respond", "state"], "sit": ["be seated", "perch"], "accept": ["agree", "approve", "assent", "comply", "consent", "endorse", "ratify"], "bear": ["endure", "suffer", "survive", "sustain", "tolerate", "undergo", "weather", "withstand"], "begin": ["commence", "embark", "enter", "initiate", "instigate", "launch"], "build": ["construct", "erect", "establish", "fabricate"], "enjoy": ["delight in", "relish", "savor"], "ignore": ["dismiss", "disregard", "neglect", "overlook", "slight"], "occur": ["arise", "emerge", "ensue", "happen", "result", "transpire"], "type": ["input", "key in", "keyboard"], "allow": ["authorize", "enable", "grant", "let", "license", "permit", "sanction"], "carry": ["convey", "draw", "haul", "propel", "pull", "push", "shift", "transfer", "transport", "turn"], "control": ["command", "dominate", "govern", "regulate"], "fall": ["decline", "descend", "drop", "plummet", "plunge"], "contribute": ["chip in", "donate", "give"], "add": ["append", "attach", "incorporate", "supplement"], "appear": ["emerge", "materialize", "seem", "surface"], "arrive": ["land", "reach"], "complete": ["accomplish", "conclude", "finalize", "finish", "fulfill", "terminate"], "consider": ["assume", "believe", "contemplate", "deem", "deliberate", "ponder", "postulate", "presume", "reckon", "regard", "speculate", "suppose", "surmise", "weigh"], "destroy": ["annihilate", "demolish", "devastate", "eradicate", "obliterate", "ruin"], "hold": ["capture", "catch", "grasp", "grip", "seize", "snatch", "stick"], "let": ["allow", "authorize", "enable", "grant", "license", "permit", "sanction"], "prepare": ["arrange", "equip", "ready"], "produce": ["create", "generate", "manufacture", "yield"], "reveal": ["disclose", "discover", "divulge", "expose", "manifest", "uncover", "unveil"], "solve": ["adjudicate", "conclude", "decide", "determine", "resolve", "settle"], "stay": ["dwell", "linger", "remain"], "break": ["crack", "fracture", "shatter", "smash", "snap"], "choose": ["designate", "elect", "opt", "pick", "select"], "deal": ["address", "administer", "cope", "handle", "manage", "tackle", "treat"], "encourage": ["foster", "inspire", "instigate", "motivate", "prompt", "spur", "stimulate", "urge"], "fail": ["collapse", "falter", "flop"], "fight": ["battle", "combat", "contend", "struggle"], "happen": ["arise", "emerge", "ensue", "occur", "result", "transpire"], "hide": ["camouflage", "conceal", "cover", "mask", "obscure"], "hope": ["anticipate", "aspire", "wish"], "pick": ["choose", "designate", "elect", "opt", "select"], "serve": ["assist", "attend", "cater"], "stand": ["rise", "tolerate"], "store": ["deposit", "hoard", "stash", "stockpile"], "treat": ["address", "administer", "cope", "deal", "handle", "manage", "tackle"], "point": ["direct", "gesture", "indicate"]};
+document.getElementById('poolN').textContent=DATA.length;
+
+const cnt=t=>DATA.filter(d=>t.includes(d[2])).length;
+document.getElementById('nSA').textContent=cnt(['S','A'])+' 문항';
+document.getElementById('nSAB').textContent=cnt(['S','A','B'])+' 문항';
+document.getElementById('nB').textContent=cnt(['B'])+' 문항';
+
+let cfg={mode:'meaning',scope:'SA',count:10,sent:true,timer:false};
+
+function bindChoices(id,key,parse){
+  document.querySelectorAll('#'+id+' .choice').forEach(c=>{
+    c.onclick=()=>{
+      document.querySelectorAll('#'+id+' .choice').forEach(x=>x.classList.remove('sel'));
+      c.classList.add('sel');cfg[key]=parse(c.dataset[key]);
+      if(key==='mode')syncSentToggle();
+    };
+  });
+}
+bindChoices('modeChoices','mode',v=>v);
+bindChoices('scopeChoices','scope',v=>v);
+bindChoices('countChoices','count',v=>parseInt(v));
+function bindTg(id,key){const el=document.getElementById(id);el.onclick=()=>{el.classList.toggle('on');cfg[key]=el.classList.contains('on');};}
+bindTg('tgSent','sent');bindTg('tgTimer','timer');
+function syncSentToggle(){}
+
+const $=id=>document.getElementById(id);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+let queue,totalUnique,mastered,missed,requeued,correct,wrong,streak,best,answered,verbList;
+
+function startQuiz(pool){
+  let scoped=pool||DATA.filter(d=>cfg.scope.includes(d[2]));
+  let sel=shuffle(scoped);
+  if(cfg.count>0) sel=sel.slice(0,cfg.count);
+  queue=sel.slice();totalUnique=sel.length;
+  verbList=DATA.map(d=>d[0]);
+  mastered=new Set();missed=new Set();requeued=new Set();
+  correct=0;wrong=0;streak=0;best=0;
+  $('start').style.display='none';$('result').style.display='none';$('quiz').style.display='block';
+  $('timerWrap').className='timer-wrap'+(cfg.timer?' show':'');
+  nextQuestion();
+}
+
+let timerInt=null,cur=null,correctText='';
+
+function meaningOptions(item){
+  const pool=DATA.filter(d=>d[0]!==item[0]);
+  return shuffle([item[1],...shuffle(pool).slice(0,3).map(d=>d[1])]);
+}
+function synonymOptions(item){
+  const v=item[0];const correctList=SYN[v]||[];
+  const correctW=pick(correctList);
+  const banned=new Set([v,correctW,...correctList]);
+  const distract=[];
+  for(const ov of shuffle(verbList)){
+    if(ov===v)continue;if(distract.length>=3)break;
+    const cand=(shuffle(SYN[ov]||[])).find(w=>!banned.has(w));
+    if(cand){distract.push(cand);banned.add(cand);}
+  }
+  while(distract.length<3) distract.push('—');
+  return {correctW,options:shuffle([correctW,...distract])};
+}
+
+function nextQuestion(){
+  clearInterval(timerInt);
+  if(queue.length===0){return showResult();}
+  cur=queue.shift();answered=false;
+  const [v,m,t,s,f]=cur;
+  $('qword').textContent=v;
+  $('qtier').textContent=t;$('qtier').className='qtier '+t;
+
+  let opts,labels=['A','B','C','D'];
+  if(cfg.mode==='synonym'){
+    const so=synonymOptions(cur);opts=so.options;correctText=so.correctW;
+    $('qprompt').innerHTML='<b style="color:var(--ink)">"'+m+'"</b> &nbsp;같은 뜻의 단어를 고르세요';
+    $('answers').innerHTML=opts.map((o,i)=>`<button class="ans" data-v="${o}"><span class="k">${labels[i]}</span>${o}</button>`).join('');
+  }else{
+    opts=meaningOptions(cur);correctText=m;
+    $('qprompt').textContent='이 단어의 뜻은?';
+    $('answers').innerHTML=opts.map((o,i)=>`<button class="ans" data-v="${o}"><span class="k">${labels[i]}</span>${o}</button>`).join('');
+  }
+  document.querySelectorAll('#answers .ans').forEach(b=>b.onclick=()=>answer(b));
+
+  // sentence
+  if(cfg.sent && s){
+    let html=esc(s);
+    if(f){const re=new RegExp('\\b('+f+')\\b','i');html=html.replace(re,'<span class="hl">$1</span>');}
+    $('qsentText').innerHTML=html;$('qsent').className='qsent';
+  }else{$('qsent').className='qsent hidden';}
+
+  $('sScore').textContent=correct;$('sStreak').textContent=streak;
+  $('sIdx').textContent=mastered.size;$('sTot').textContent=totalUnique;
+  $('pfill').style.width=(mastered.size/totalUnique*100)+'%';
+  $('feedback').textContent='';$('feedback').className='feedback';$('nextBtn').style.display='none';
+
+  if(cfg.timer){
+    $('tfill').style.transition='none';$('tfill').style.width='100%';void $('tfill').offsetWidth;
+    $('tfill').style.transition='width 8s linear';$('tfill').style.width='0%';
+    let t0=Date.now();
+    timerInt=setInterval(()=>{if(Date.now()-t0>=8000){clearInterval(timerInt);if(!answered)resolve(false,null);}},100);
+  }
+}
+
+function answer(btn){if(!answered)resolve(btn.dataset.v===correctText,btn);}
+
+function resolve(isCorrect,btn){
+  answered=true;clearInterval(timerInt);
+  if(cfg.timer)$('tfill').style.width=getComputedStyle($('tfill')).width;
+  document.querySelectorAll('#answers .ans').forEach(b=>{b.disabled=true;if(b.dataset.v===correctText)b.classList.add('correct');});
+  const v=cur[0];
+  if(isCorrect){
+    correct++;streak++;best=Math.max(best,streak);mastered.add(v);
+    $('feedback').textContent='정답!';$('feedback').className='feedback ok';
+    $('sScore').textContent=correct;$('sStreak').textContent=streak;
+    $('sIdx').textContent=mastered.size;$('pfill').style.width=(mastered.size/totalUnique*100)+'%';
+    setTimeout(nextQuestion,650);
+  }else{
+    if(btn)btn.classList.add('wrong');
+    wrong++;streak=0;missed.add(v);
+    if(!requeued.has(v)){requeued.add(v);queue.push(cur);}
+    const ans=cfg.mode==='synonym'?(correctText+' ('+cur[1]+')'):cur[1];
+    $('feedback').textContent=(btn?'정답: ':'시간 초과 · 정답: ')+ans;
+    $('feedback').className='feedback bad';$('sStreak').textContent=0;$('nextBtn').style.display='inline-block';
+  }
+}
+$('nextBtn').onclick=nextQuestion;
+
+function showResult(){
+  $('quiz').style.display='none';$('result').style.display='block';
+  const total=correct+wrong;const pct=total?Math.round(correct/total*100):0;
+  $('rScore').textContent=pct+'%';
+  $('rSub').textContent=`총 ${total}회 응답 중 ${correct}회 정답 · 고유 단어 ${totalUnique}개`;
+  $('rCorrect').textContent=correct;$('rWrong').textContent=wrong;$('rBest').textContent=best;
+  const missArr=DATA.filter(d=>missed.has(d[0]));
+  $('missCount').textContent=missArr.length;
+  if(missArr.length){
+    $('missedBox').style.display='block';
+    $('misslist').innerHTML=missArr.map(d=>{
+      const extra=cfg.mode==='synonym'&&SYN[d[0]]?` <span style="color:var(--ink3)">= ${SYN[d[0]].slice(0,3).join(', ')}</span>`:'';
+      return `<div class="missrow"><span class="w">${d[0]}</span><span class="m">${d[1]}${extra}</span></div>`;
+    }).join('');
+    $('retryWrong').style.display='inline-block';
+  }else{
+    $('missedBox').innerHTML='<div class="perfect">완벽해요! 틀린 단어가 없습니다 🎉</div>';
+    $('retryWrong').style.display='none';
+  }
+}
+$('retryWrong').onclick=()=>{const missArr=DATA.filter(d=>missed.has(d[0]));cfg.count=0;startQuiz(missArr);};
+$('restart').onclick=()=>{$('result').style.display='none';$('start').style.display='block';};
+$('startBtn').onclick=()=>startQuiz();
+
+</script>
+</body>
+</html>
