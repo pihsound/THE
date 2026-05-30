@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading Drill — Verb 300 + Voca 100</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F3EA;--paper2:#FBF8F1;--ink:#2A2723;--ink2:#6B6358;--ink3:#9A9183;
+  --rust:#C2511F;--rust-soft:#F4E3D8;--line:#E5DCCB;--line2:#D8CDB8;
+  --ok:#0F6E56;--ok-bg:#D9EFE6;--bad:#B23B2E;--bad-bg:#F6DED9;
+  --serif:'Gowun Batang',serif;--display:'Fraunces',serif;--sans:'IBM Plex Sans KR',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--line) 0.5px,transparent 0.5px);background-size:22px 22px;min-height:100vh}
+.shell{max-width:800px;margin:0 auto;padding:0 22px 64px}
+.kicker{font-family:var(--display);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--rust);font-weight:600}
+.btn{font-family:var(--sans);font-size:15px;font-weight:500;padding:13px 22px;border-radius:12px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;transition:transform .1s,opacity .15s}
+.btn:hover{opacity:.9}.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+.btn.ghost:hover{background:#fff;opacity:1}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* START */
+#start{padding:54px 0}
+#start h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,6vw,54px);line-height:1.06;margin:16px 0 8px}
+#start h1 .en{display:block;font-family:var(--display);font-style:italic;font-weight:400;color:var(--ink2);font-size:.42em;margin-top:12px}
+#start .lede{color:var(--ink2);max-width:580px;margin-bottom:34px;font-size:15px;line-height:1.72}
+.opt-group{margin-bottom:26px}
+.opt-group>.label{font-size:12.5px;font-weight:600;color:var(--ink3);letter-spacing:.05em;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.opt-group>.label .ln{flex:1;height:1px;background:var(--line2)}
+.choices{display:flex;gap:10px;flex-wrap:wrap}
+.choice{flex:1;min-width:130px;padding:14px 16px;border:1.5px solid var(--line2);border-radius:13px;background:var(--paper2);cursor:pointer;transition:all .15s}
+.choice:hover{border-color:var(--ink3)}
+.choice.sel{border-color:var(--rust);background:#fff;box-shadow:0 0 0 3px var(--rust-soft)}
+.choice .t{font-family:var(--serif);font-weight:700;font-size:16px}
+.choice .d{font-size:12px;color:var(--ink2);margin-top:3px}
+#startBtn{margin-top:8px;width:100%;font-size:16px;padding:16px}
+
+/* DRILL */
+#drill{display:none;padding:24px 0}
+.qtopbar{margin-bottom:14px}
+.backbtn{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:13px;color:var(--ink2);background:transparent;border:1px solid var(--line2);border-radius:9px;padding:7px 13px;cursor:pointer;transition:all .15s}
+.backbtn:hover{border-color:var(--ink3);background:var(--paper2);color:var(--ink)}
+.backbtn svg{width:15px;height:15px;stroke:currentColor}
+.qbar{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.progress{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress .fill{height:100%;background:var(--rust);width:0;transition:width .3s}
+.qstats{display:flex;gap:16px;font-size:13px;color:var(--ink2);font-family:var(--display);font-weight:500}
+.qstats b{color:var(--ink)}
+
+.passage-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.passage-head .tag{font-family:var(--display);font-size:11px;color:var(--rust);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.passage-head .setn{font-family:var(--display);font-size:13px;color:var(--ink3);font-weight:600}
+.passage{background:var(--paper2);border:1.5px solid var(--line2);border-radius:18px;padding:26px 28px;margin-bottom:22px;
+  font-family:var(--serif);font-size:16.5px;line-height:2.0;color:var(--ink)}
+.passage u{text-decoration:none;border-bottom:2.5px solid var(--rust);font-weight:700;padding:0 1px;color:var(--ink)}
+
+.qblock{margin-bottom:20px;padding-bottom:20px;border-bottom:1px dashed var(--line2)}
+.qblock:last-of-type{border-bottom:none}
+.qtype{display:inline-block;font-family:var(--display);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--rust);background:var(--rust-soft);padding:3px 10px;border-radius:99px;margin-bottom:8px}
+.qtext{font-family:var(--serif);font-weight:700;font-size:16px;margin-bottom:12px;line-height:1.5}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{padding:12px 15px;border:1.5px solid var(--line2);border-radius:11px;background:var(--paper2);cursor:pointer;font-size:14.5px;text-align:left;
+  transition:all .12s;font-family:var(--sans);color:var(--ink);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.opt:hover{border-color:var(--ink3);background:#fff}
+.opt:disabled{cursor:default}
+.opt .num{font-family:var(--display);font-size:13px;color:var(--ink3);font-weight:600;flex-shrink:0;line-height:1.5}
+.opt.correct{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.correct .num{color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.opt.wrong .num{color:var(--bad)}
+
+.qexplain{display:none;margin-top:10px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:11px;
+  font-size:13.5px;line-height:1.7;color:var(--ink2)}
+.qexplain.show{display:block}
+.qexplain .lbl{font-family:var(--display);font-size:10.5px;color:var(--rust);font-weight:600;letter-spacing:.08em;display:block;margin-bottom:5px;text-transform:uppercase}
+
+.gradebar{margin:8px 0 4px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.gradebar .info{font-size:13.5px;color:var(--ink2);font-family:var(--display)}
+.gradebar .info b{color:var(--ink)}
+
+/* RESULT */
+#result{display:none;padding:40px 0}
+#result h2{font-family:var(--serif);font-weight:700;font-size:34px;margin-bottom:6px}
+.score-big{font-family:var(--display);font-size:72px;font-weight:600;color:var(--rust);line-height:1;margin:18px 0 6px}
+.score-sub{color:var(--ink2);font-size:15px;margin-bottom:30px}
+.metrics{display:flex;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.metric{flex:1;min-width:110px;background:var(--paper2);border:1px solid var(--line2);border-radius:14px;padding:16px 18px}
+.metric .l{font-size:12px;color:var(--ink3)}
+.metric .v{font-family:var(--display);font-size:26px;font-weight:600;margin-top:3px}
+.bytype{margin-bottom:26px}
+.bytype h3{font-family:var(--serif);font-weight:700;font-size:17px;margin-bottom:12px}
+.typerow{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--paper2);border:1px solid var(--line);border-radius:11px;margin-bottom:8px}
+.typerow .nm{font-size:14px;flex:1}
+.typerow .sc{font-family:var(--display);font-weight:600;font-size:15px;color:var(--ink)}
+.result-actions{display:flex;gap:11px;flex-wrap:wrap}
+
+@media(max-width:560px){.shell{padding:0 16px 50px}.passage{font-size:15.5px;line-height:1.95;padding:20px 20px}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- START -->
+  <section id="start">
+    <div class="kicker">6단계 · 독해 + 동의어</div>
+    <h1>Reading Drill<span class="en">Read the passage, then answer in exam style</span></h1>
+    <p class="lede">실제 국가직·지방직 9급 영어 독해 형식 그대로입니다. 130~150단어 지문을 읽고 <b>① 주제·제목 → ② 밑줄 친 단어의 동의어 → ③ 일치/불일치</b> 세 문항을 풉니다. 밑줄 단어는 학습한 446개 단어에서 나오며, 지문 안 문맥에서 그 의미를 가려내는 실전 감각을 기릅니다. 한 지문을 다 푼 뒤 채점하면 문항별 정답·해설이 펼쳐집니다.</p>
+
+    <div class="opt-group">
+      <div class="label">지문 수<span class="ln"></span></div>
+      <div class="choices" id="countChoices">
+        <div class="choice sel" data-count="5"><div class="t">5지문</div><div class="d">15문항</div></div>
+        <div class="choice" data-count="10"><div class="t">10지문</div><div class="d">30문항 (전체)</div></div>
+      </div>
+    </div>
+
+    <div class="opt-group">
+      <div class="label">순서<span class="ln"></span></div>
+      <div class="choices" id="orderChoices">
+        <div class="choice sel" data-order="seq"><div class="t">순서대로</div><div class="d">1번부터</div></div>
+        <div class="choice" data-order="shuffle"><div class="t">섞기</div><div class="d">랜덤 순서</div></div>
+      </div>
+    </div>
+
+    <button class="btn" id="startBtn">시작하기 →</button>
+  </section>
+
+  <!-- DRILL -->
+  <section id="drill">
+    <div class="qtopbar">
+      <button class="backbtn" id="backBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>처음으로</button>
+    </div>
+    <div class="qbar">
+      <div class="progress"><div class="fill" id="pfill"></div></div>
+      <div class="qstats"><span>정답 <b id="sScore">0</b></span><span>지문 <b id="sIdx">1</b>/<b id="sTot">5</b></span></div>
+    </div>
+
+    <div class="passage-head">
+      <span class="tag" id="ptag">환경 · 과학</span>
+      <span class="setn" id="psetn">Passage 01</span>
+    </div>
+    <div class="passage" id="passage">…</div>
+
+    <div id="questions"></div>
+
+    <div class="gradebar">
+      <span class="info" id="gradeInfo"></span>
+      <button class="btn" id="gradeBtn">채점하기</button>
+    </div>
+    <div class="gradebar" style="justify-content:flex-end">
+      <button class="btn ghost" id="nextBtn" style="display:none">다음 지문 →</button>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result">
+    <div class="kicker">결과</div>
+    <h2>수고했어요!</h2>
+    <div class="score-big" id="rScore">0%</div>
+    <div class="score-sub" id="rSub"></div>
+    <div class="metrics">
+      <div class="metric"><div class="l">정답</div><div class="v" id="rCorrect" style="color:var(--ok)">0</div></div>
+      <div class="metric"><div class="l">오답</div><div class="v" id="rWrong" style="color:var(--bad)">0</div></div>
+      <div class="metric"><div class="l">완벽한 지문</div><div class="v" id="rPerfect">0</div></div>
+    </div>
+    <div class="bytype">
+      <h3>유형별 정답률</h3>
+      <div class="typerow"><span class="nm">주제 · 제목</span><span class="sc" id="tTopic">0/0</span></div>
+      <div class="typerow"><span class="nm">동의어</span><span class="sc" id="tSyn">0/0</span></div>
+      <div class="typerow"><span class="nm">일치 · 불일치</span><span class="sc" id="tTF">0/0</span></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn ghost" id="restart">처음으로</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const SETS=[{"id":1,"topicTag":"환경 · 과학","passage":"Coral reefs are often called the rainforests of the sea because they <u data-syn=\"support\">support</u> an enormous variety of marine life. Although they cover less than one percent of the ocean floor, they provide a home for nearly a quarter of all ocean species. In recent decades, however, rising sea temperatures have caused a process known as coral bleaching, in which corals lose the colorful algae that feed them. Without these algae, the corals slowly starve and turn white. Scientists warn that if ocean temperatures continue to rise, most of the world's reefs could disappear within this century. Some researchers are now developing heat-resistant corals in laboratories, hoping to restore damaged reefs. Yet they agree that the only lasting solution is to reduce the greenhouse gas emissions that cause the oceans to warm in the first place.","questions":[{"type":"주제","q":"윗글의 주제로 가장 적절한 것은?","options":["Coral reefs threatened by climate change and efforts to save them","The biological process by which coral reefs form","How to create new marine species in a laboratory","Ecological differences between rainforests and coral reefs"],"answer":0,"explain":"지문은 산호초의 중요성 → 수온 상승으로 인한 백화 현상 위협 → 실험실 연구와 근본 해결책(온실가스 감축)을 다룬다. 따라서 '기후 변화로 위협받는 산호초와 해결 노력'이 주제다. 한 오답은 산호 형성 과정이 아니라 백화를, 나머지 오답은 지엽적이거나 언급되지 않은 내용."},{"type":"동의어","q":"밑줄 친 support와 의미가 가장 가까운 것은?","options":["sustain","ignore","reduce","reveal"],"answer":0,"explain":"여기서 support는 다양한 해양 생물을 '부양하다, 살아가게 하다'의 의미이므로 sustain(유지·지탱하다)이 가장 가깝다. ignore(무시), reduce(줄이다), reveal(드러내다)은 의미가 다르다."},{"type":"일치","q":"윗글의 내용과 일치하는 것은?","options":["Coral reefs cover less than 1% of the ocean floor but are home to many marine species.","Coral bleaching happens when sea temperatures drop.","Scientists believe laboratory research is the only permanent solution.","Coral reefs cover a quarter of the world's oceans."],"answer":0,"explain":"지문에서 산호초는 해저의 1% 미만을 덮지만 전체 해양 종의 약 1/4에게 서식지를 제공한다고 했으므로 정답 선택지가 일치한다. 한 오답은 수온 '상승'이 원인이므로 불일치, 다른 오답은 근본 해결책이 온실가스 감축이라 했으므로 불일치, 또 다른 오답은 면적이 아니라 종의 비율이므로 불일치."}]},{"id":2,"topicTag":"사회 · 기술","passage":"When smartphones first appeared, many people believed they would make us more productive. Today, the picture is more complicated. Studies <u data-syn=\"indicate\">indicate</u> that the average person checks their phone more than eighty times a day, often without any clear purpose. Each interruption may seem harmless, but together they break our concentration and make deep, focused work difficult. Psychologists call this state \"continuous partial attention,\" a condition in which we are always half-focused on something else. To address the problem, some experts recommend simple habits: turning off unnecessary notifications, keeping the phone in another room while working, and setting specific times to check messages. These small changes do not require advanced technology. Instead, they ask us to be more aware of how we use the powerful devices we carry every day.","questions":[{"type":"제목","q":"윗글의 제목으로 가장 적절한 것은?","options":["How Constant Phone Use Harms Our Focus","The Invention of the Modern Smartphone","Why Notifications Make Phones Faster","The History of Human Productivity"],"answer":0,"explain":"지문은 잦은 스마트폰 확인이 집중력을 깨뜨린다는 문제와 그 해결 습관을 다룬다. 따라서 '잦은 휴대폰 사용이 집중력을 해치는 방식'이 제목으로 적절하다. 일부 오답은 다루지 않았고, 다른 오답은 본문 내용과 반대다."},{"type":"동의어","q":"밑줄 친 indicate와 의미가 가장 가까운 것은?","options":["suggest","conceal","destroy","refuse"],"answer":0,"explain":"여기서 indicate는 연구가 어떤 사실을 '보여주다, 시사하다'의 의미이므로 suggest가 가장 가깝다. conceal(숨기다), destroy(파괴하다), refuse(거절하다)는 의미가 다르다."},{"type":"불일치","q":"윗글의 내용과 일치하지 않는 것은?","options":["Smartphones were thought to harm concentration from the moment they first appeared.","The average person checks their phone more than eighty times a day.","Experts recommend turning off unnecessary notifications.","The suggested solutions do not require advanced technology."],"answer":0,"explain":"지문 첫머리에서 스마트폰이 처음엔 '생산성을 높여 줄 것'으로 여겨졌다고 했으므로 정답(틀린 설명) 선택지. 나머지 선택지는 모두 본문과 일치한다."}]},{"id":3,"topicTag":"역사 · 문화","passage":"The ancient city of Pompeii offers a remarkable window into daily Roman life. In 79 AD, the nearby volcano Mount Vesuvius erupted and buried the entire city under a thick layer of ash. While the disaster was a tragedy for its residents, the ash also <u data-syn=\"preserved\">preserved</u> the city in extraordinary detail. For centuries, Pompeii lay hidden and forgotten. When archaeologists finally began to excavate the site in the eighteenth century, they discovered streets, houses, shops, and even loaves of bread still sitting in ovens. Wall paintings revealed what ordinary Romans valued and feared. Today, careful work continues, but experts face a new challenge: exposure to air and weather is now damaging the very ruins that the ash once protected. To save Pompeii for future generations, conservationists must balance public access with the urgent need for protection.","questions":[{"type":"주제","q":"윗글의 주제로 가장 적절한 것은?","options":["Pompeii preserved by volcanic ash and the challenge of conserving it","The scientific causes of the eruption of Mount Vesuvius","Bread-baking techniques of ancient Rome","The development of archaeology in the eighteenth century"],"answer":0,"explain":"지문은 화산재가 폼페이를 상세히 보존했다는 점과, 오늘날 공기·날씨 노출로 인한 새로운 보존 과제를 다룬다. 따라서 정답 선택지가 주제다. 나머지 선택지는 지엽적이거나 중심 내용이 아니다."},{"type":"동의어","q":"밑줄 친 preserved와 의미가 가장 가까운 것은?","options":["protected","destroyed","ignored","increased"],"answer":0,"explain":"여기서 preserved는 도시를 '온전히 보존했다'의 의미이므로 protected(보호했다)가 가장 가깝다. destroyed(파괴), ignored(무시), increased(증가)는 반대이거나 무관하다."},{"type":"일치","q":"윗글의 내용과 일치하는 것은?","options":["The volcanic ash played a role in preserving Pompeii in great detail.","Pompeii was excavated immediately after the eruption.","Pompeii is now completely safe from air and weather.","No wall paintings were discovered."],"answer":0,"explain":"지문에서 화산재가 도시를 놀라울 만큼 상세히 보존했다고 했으므로 정답 선택지가 일치한다. 한 오답은 수 세기 동안 잊혔다가 18세기에 발굴되었으므로 불일치, 다른 오답은 현재 공기·날씨로 손상되고 있으므로 불일치, 또 다른 오답은 벽화가 발견되었으므로 불일치."}]},{"id":4,"topicTag":"심리 · 교육","passage":"Many students believe that talent alone determines success, but research on learning tells a different story. Psychologist Carol Dweck found that students who believe their abilities can <u data-syn=\"develop\">develop</u> through effort tend to achieve more than those who think intelligence is fixed. She called these two attitudes the \"growth mindset\" and the \"fixed mindset.\" Students with a growth mindset see difficult problems as chances to improve, so they are more willing to try hard and learn from mistakes. In contrast, students with a fixed mindset often avoid challenges because failure feels like proof that they are not smart. Teachers can encourage a growth mindset by praising effort rather than ability and by treating errors as a normal part of learning. Over time, this approach helps students build confidence and reach goals they once thought impossible.","questions":[{"type":"제목","q":"윗글의 제목으로 가장 적절한 것은?","options":["How a Growth Mindset Helps Students Succeed","Why Talent Is the Only Key to Success","The Dangers of Praising Student Effort","How to Measure Fixed Intelligence"],"answer":0,"explain":"지문은 능력이 노력으로 발전한다고 믿는 '성장 마인드셋'이 성취를 돕는다는 내용이다. 따라서 정답 선택지가 제목이다. 한 오답은 본문과 반대, 다른 오답은 노력 칭찬을 권장하므로 반대, 또 다른 오답은 다루지 않았다."},{"type":"동의어","q":"밑줄 친 develop와 의미가 가장 가까운 것은?","options":["grow","disappear","refuse","conceal"],"answer":0,"explain":"여기서 develop는 능력이 노력으로 '발전하다, 자라다'의 의미이므로 grow가 가장 가깝다. disappear(사라지다), refuse(거절하다), conceal(숨기다)은 의미가 다르다."},{"type":"불일치","q":"윗글의 내용과 일치하지 않는 것은?","options":["Students with a fixed mindset see difficult problems as chances to grow.","Students with a growth mindset try to learn from their mistakes.","Teachers can foster a growth mindset by praising effort over ability.","Dweck called the two attitudes the growth mindset and the fixed mindset."],"answer":0,"explain":"어려운 문제를 성장의 기회로 보는 것은 '성장 마인드셋'을 가진 학생이다. 해당 진술은 고정 마인드셋을 설명한 것이므로 불일치. 나머지 선택지는 모두 본문과 일치한다."}]},{"id":5,"topicTag":"경제 · 사회","passage":"In recent years, many companies have allowed employees to work from home, a practice that became common during the pandemic. Supporters argue that remote work can <u data-syn=\"reduce\">reduce</u> commuting time, lower office costs, and give workers more control over their schedules. Studies suggest that many employees are just as productive at home as in the office, and some are even more so. However, remote work also brings challenges. Without daily face-to-face contact, new employees may find it harder to learn from experienced colleagues, and teams can struggle to build trust. Some workers also report feeling isolated and finding it difficult to separate work from personal life. As a result, many companies are now adopting a \"hybrid\" model, in which employees spend part of the week in the office and part at home. This approach attempts to combine the flexibility of remote work with the benefits of in-person collaboration.","questions":[{"type":"주제","q":"윗글의 주제로 가장 적절한 것은?","options":["The pros and cons of remote work and the hybrid model as a compromise","The impact of the pandemic on the global economy","Ways to lower office rental costs","The best way to train new employees"],"answer":0,"explain":"지문은 원격 근무의 장점과 단점을 모두 제시하고, 그 절충안으로 하이브리드 모델을 소개한다. 따라서 정답 선택지가 주제다. 나머지 선택지는 지문의 일부 소재일 뿐 중심 내용이 아니다."},{"type":"동의어","q":"밑줄 친 reduce와 의미가 가장 가까운 것은?","options":["lower","increase","create","ignore"],"answer":0,"explain":"여기서 reduce는 통근 시간을 '줄이다'의 의미이므로 lower가 가장 가깝다. increase(늘리다)는 반대, create(만들다)·ignore(무시하다)는 무관하다."},{"type":"일치","q":"윗글의 내용과 일치하는 것은?","options":["Many companies are adopting a model that combines remote work and in-person collaboration.","Employees working from home are always less productive than those in the office.","Remote work has no drawbacks at all.","The hybrid model makes employees work entirely from home."],"answer":0,"explain":"지문 마지막에서 많은 회사가 사무실과 집을 병행하는 하이브리드 모델을 도입한다고 했으므로 정답 선택지가 일치한다. 한 오답은 집에서 동등하거나 더 생산적일 수 있다 했으므로 불일치, 다른 오답은 고립감 등 단점을 언급했으므로 불일치, 또 다른 오답은 주중 일부만 집에서 일하므로 불일치."}]},{"id":6,"topicTag":"과학 · 환경","passage":"Honeybees play a far greater role in our food supply than most people realize. As they move from flower to flower collecting nectar, they also carry pollen, which allows plants to produce fruits and seeds. Scientists estimate that bees help <u data-syn=\"produce\">produce</u> about one-third of the food we eat, including many fruits, vegetables, and nuts. In recent years, however, bee populations have fallen sharply in many countries. Researchers point to several causes, including the heavy use of pesticides, the loss of wild flowers, and the spread of disease. To protect these vital insects, some cities have started planting bee-friendly gardens and limiting harmful chemicals. Individuals can help too, simply by growing flowers and avoiding pesticides in their own yards. Small actions, repeated by many people, can make a real difference for the future of our food.","questions":[{"type":"주제","q":"윗글의 주제로 가장 적절한 것은?","options":["The importance of honeybees in food production and efforts to protect them","The process by which honeybees make honey","The effects of pesticides on human health","How to design an urban garden"],"answer":0,"explain":"지문은 꿀벌이 식량 생산에 핵심 역할을 한다는 점과, 개체 수 감소 원인 및 보호 노력을 다룬다. 따라서 정답 선택지가 주제다. 나머지 선택지는 지엽적 소재이거나 중심 내용이 아니다."},{"type":"동의어","q":"밑줄 친 produce와 의미가 가장 가까운 것은?","options":["generate","destroy","ignore","reduce"],"answer":0,"explain":"여기서 produce는 식량을 '만들어 내다, 생산하다'의 의미이므로 generate가 가장 가깝다. destroy(파괴), ignore(무시), reduce(줄이다)는 의미가 다르다."},{"type":"불일치","q":"윗글의 내용과 일치하지 않는 것은?","options":["Honeybee populations have risen sharply in many countries recently.","Honeybees carry pollen as they move from flower to flower.","The use of pesticides is one cause of the decline in bees.","Individuals can help by growing flowers and avoiding pesticides."],"answer":0,"explain":"지문에서 최근 여러 나라에서 꿀벌 개체 수가 '급격히 감소했다(fallen sharply)'고 했으므로 정답(틀린 설명) 선택지. 나머지 선택지는 모두 본문과 일치한다."}]},{"id":7,"topicTag":"건강 · 과학","passage":"Sleep is not simply a time when the body shuts down. While we rest, the brain remains remarkably active, working to <u data-syn=\"recover\">recover</u> and organize what we have learned during the day. During deep sleep, the brain strengthens important memories and clears away waste products that build up while we are awake. Scientists have found that people who sleep well perform better on tests of memory and problem-solving. In contrast, those who regularly sleep too little may struggle with attention, mood, and decision-making. Despite this evidence, many adults treat sleep as something they can sacrifice when they are busy. Experts warn that this is a serious mistake. They recommend going to bed at a regular time, avoiding screens before sleep, and keeping the bedroom dark and quiet. These simple habits can greatly improve both the length and the quality of our rest.","questions":[{"type":"제목","q":"윗글의 제목으로 가장 적절한 것은?","options":["Why Sleep Matters and How to Sleep Better","How the Body Shuts Down at Night","The Best Foods to Eat Before Bed","Why Busy Adults Need Less Sleep"],"answer":0,"explain":"지문은 수면 중 뇌의 활동과 수면의 중요성, 그리고 더 잘 자는 방법을 다룬다. 따라서 정답 선택지가 제목이다. 한 오답은 본문과 반대(뇌는 활발히 활동), 다른 오답은 음식 언급 없음, 또 다른 오답은 본문과 반대다."},{"type":"동의어","q":"밑줄 친 recover와 의미가 가장 가까운 것은?","options":["restore","destroy","ignore","reveal"],"answer":0,"explain":"여기서 recover는 뇌가 회복·재정비하는 의미이므로 restore(회복시키다)가 가장 가깝다. destroy(파괴), ignore(무시), reveal(드러내다)은 의미가 다르다."},{"type":"일치","q":"윗글의 내용과 일치하는 것은?","options":["During deep sleep, the brain strengthens important memories.","The brain shuts down completely during sleep.","Sleeping too little causes no problems with attention.","Experts recommend using screens before bed."],"answer":0,"explain":"지문에서 깊은 수면 동안 뇌가 중요한 기억을 강화한다고 했으므로 정답 선택지가 일치한다. 한 오답은 뇌가 활발하다 했으므로 불일치, 다른 오답은 주의력 문제를 겪는다 했으므로 불일치, 또 다른 오답은 화면을 피하라 했으므로 불일치."}]},{"id":8,"topicTag":"사회 · 도시","passage":"As cities grow larger, many of them face the same problem: too much traffic and too little space. One increasingly popular solution is urban farming, in which residents grow food on rooftops, in empty lots, and even on the walls of buildings. These small farms <u data-syn=\"supply\">supply</u> fresh vegetables to local communities while reducing the distance food must travel. Shorter transport means lower carbon emissions and fresher produce on the table. Urban farms offer social benefits as well. They bring neighbors together, teach children where food comes from, and turn unused spaces into green, living places. Some cities now actively support these projects by offering free land or training to interested residents. While urban farming alone cannot feed an entire city, experts believe it can play a valuable part in building healthier, more connected communities.","questions":[{"type":"주제","q":"윗글의 주제로 가장 적절한 것은?","options":["The environmental and social benefits of urban farming","The history of traffic problems in big cities","Architectural techniques for building rooftop gardens","How to keep vegetables fresh"],"answer":0,"explain":"지문은 도시 농업이 신선한 채소 공급, 탄소 배출 감소, 공동체 연결 등 환경적·사회적 이점을 준다는 내용이다. 따라서 정답 선택지가 주제다. 나머지 선택지는 지엽적 소재이거나 중심 내용이 아니다."},{"type":"동의어","q":"밑줄 친 supply와 의미가 가장 가까운 것은?","options":["provide","destroy","ignore","increase"],"answer":0,"explain":"여기서 supply는 신선한 채소를 '공급하다, 제공하다'의 의미이므로 provide가 가장 가깝다. destroy(파괴), ignore(무시), increase(증가)는 의미가 다르다."},{"type":"불일치","q":"윗글의 내용과 일치하지 않는 것은?","options":["Urban farming increases the distance food must be transported.","Urban farming supplies fresh vegetables to local communities.","Some cities support urban farming by offering free land or training.","Urban farming alone cannot feed an entire city."],"answer":0,"explain":"지문에서 도시 농업은 식량 운송 거리를 '줄인다(reducing the distance)'고 했으므로 정답(틀린 설명) 선택지. 나머지 선택지는 모두 본문과 일치한다."}]},{"id":9,"topicTag":"기술 · 미래","passage":"Artificial intelligence is changing the workplace at a remarkable speed. Machines can now perform many tasks that once required human workers, from sorting documents to answering customer questions. Some people fear that these systems will <u data-syn=\"replace\">replace</u> human jobs entirely, leaving millions without work. Others take a more hopeful view. They point out that throughout history, new technologies have destroyed certain jobs while creating others that no one could have imagined before. The invention of the computer, for example, ended some forms of office work but created entire new industries. Experts agree on one thing: workers of the future will need to keep learning new skills throughout their careers. Rather than competing directly with machines, people will do best by focusing on tasks that require creativity, judgment, and human connection — areas where machines still struggle.","questions":[{"type":"제목","q":"윗글의 제목으로 가장 적절한 것은?","options":["AI and the Changing Future of Work","How Computers Were First Invented","Why Machines Will Never Make Mistakes","The End of All Human Employment"],"answer":0,"explain":"지문은 AI가 일자리를 바꾸는 양상과 미래 노동자가 갖춰야 할 자세를 다룬다. 따라서 정답 선택지가 제목이다. 한 오답은 지엽적 예시, 다른 오답은 언급 없음, 또 다른 오답은 본문이 새 일자리 창출도 말하므로 지나치게 단정적이다."},{"type":"동의어","q":"밑줄 친 replace와 의미가 가장 가까운 것은?","options":["take over","support","reveal","reduce"],"answer":0,"explain":"여기서 replace는 인간의 일자리를 '대체하다'의 의미이므로 take over(인계받다, 떠맡다)가 가장 가깝다. support(지지), reveal(드러내다), reduce(줄이다)는 의미가 다르다."},{"type":"일치","q":"윗글의 내용과 일치하는 것은?","options":["Throughout history, new technology has destroyed some jobs while creating new ones.","The invention of the computer created no new industries at all.","Experts believe future workers will no longer need to learn.","Machines are better than humans at tasks requiring creativity and judgment."],"answer":0,"explain":"지문에서 새 기술이 일부 일자리를 없애는 동시에 새로운 일자리를 만들어 왔다고 했으므로 정답 선택지가 일치한다. 한 오답은 새 산업을 만들었다 했으므로 불일치, 다른 오답은 계속 배워야 한다 했으므로 불일치, 또 다른 오답은 그런 영역에서 기계가 여전히 어려움을 겪는다 했으므로 불일치."}]},{"id":10,"topicTag":"문화 · 언어","passage":"Learning a second language as an adult is often seen as a difficult task, but research suggests it brings benefits that go far beyond communication. Studies <u data-syn=\"reveal\">reveal</u> that people who speak more than one language tend to have stronger memory and better attention. The mental effort of switching between languages appears to keep the brain flexible and active. Some research even suggests that lifelong bilingualism may delay the onset of memory-related diseases in old age. Beyond these mental benefits, knowing another language opens doors to new cultures, friendships, and job opportunities. Of course, becoming fluent takes time and steady practice; it cannot be achieved in a few weeks. Yet experts agree that the effort is well worth it. Even partial knowledge of a foreign language can deepen our understanding of the world and of our own native tongue.","questions":[{"type":"주제","q":"윗글의 주제로 가장 적절한 것은?","options":["The various benefits of learning a foreign language as an adult","The speed at which children learn languages","Medical treatments for memory-related diseases","The number and distribution of languages around the world"],"answer":0,"explain":"지문은 성인의 외국어 학습이 기억력·주의력 향상, 질병 지연, 문화·일자리 기회 등 다양한 이점을 준다는 내용이다. 따라서 정답 선택지가 주제다. 나머지 선택지는 다루지 않았거나 지엽적인 내용이다."},{"type":"동의어","q":"밑줄 친 reveal과 의미가 가장 가까운 것은?","options":["show","conceal","ignore","destroy"],"answer":0,"explain":"여기서 reveal은 연구가 어떤 사실을 '드러내다, 보여주다'의 의미이므로 show가 가장 가깝다. conceal(숨기다)은 정반대, ignore(무시)·destroy(파괴)는 무관하다."},{"type":"불일치","q":"윗글의 내용과 일치하지 않는 것은?","options":["Fluency in a foreign language can be achieved within a few weeks.","People who speak more than one language tend to have better memory.","Lifelong bilingualism may delay memory-related diseases in old age.","Even partial knowledge of a foreign language can deepen one's understanding of the world."],"answer":0,"explain":"지문에서 유창해지는 데는 시간과 꾸준한 연습이 필요하며 '몇 주 안에는 이룰 수 없다'고 했으므로 정답(틀린 설명) 선택지. 나머지 선택지는 모두 본문과 일치한다."}]}];
+let cfg={count:5,order:'seq'};
+const $=id=>document.getElementById(id);
+
+function bindChoices(id,key,parse){
+  document.querySelectorAll('#'+id+' .choice').forEach(c=>{
+    c.onclick=()=>{
+      document.querySelectorAll('#'+id+' .choice').forEach(x=>x.classList.remove('sel'));
+      c.classList.add('sel');cfg[key]=parse(c.dataset[key]);
+    };
+  });
+}
+bindChoices('countChoices','count',v=>parseInt(v));
+bindChoices('orderChoices','order',v=>v);
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escKeepU(s){
+  // escape but preserve <u ...>...</u> tags
+  return s.replace(/<u data-syn="[^"]*">([^<]+)<\/u>/g,'\u0001$1\u0002')
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/\u0001/g,'<u>').replace(/\u0002/g,'</u>');
+}
+
+let queue,total,idx,totalCorrect,totalQ,perfectSets,picks,graded,curSet;
+let typeStats; // {topic:{c,t}, syn:{c,t}, tf:{c,t}}
+
+function typeKey(t){
+  if(t==='동의어')return'syn';
+  if(t==='일치'||t==='불일치')return'tf';
+  return'topic';
+}
+
+function startDrill(){
+  let sel=SETS.slice();
+  if(cfg.order==='shuffle')sel=shuffle(sel);
+  if(cfg.count>0)sel=sel.slice(0,cfg.count);
+  queue=sel.slice();total=sel.length;idx=0;
+  totalCorrect=0;totalQ=0;perfectSets=0;
+  typeStats={topic:{c:0,t:0},syn:{c:0,t:0},tf:{c:0,t:0}};
+  $('start').style.display='none';$('result').style.display='none';$('drill').style.display='block';
+  nextSet();
+}
+
+function nextSet(){
+  if(queue.length===0)return showResult();
+  curSet=queue.shift();idx++;graded=false;picks={};
+  $('ptag').textContent=curSet.topicTag;
+  $('psetn').textContent='Passage '+String(curSet.id).padStart(2,'0');
+  $('passage').innerHTML=escKeepU(curSet.passage);
+  // shuffle options per question, track new answer index by content
+  curSet._shuffled=curSet.questions.map(q=>{
+    const correctText=q.options[q.answer];
+    const opts=shuffle(q.options);
+    return {type:q.type,q:q.q,options:opts,answer:opts.indexOf(correctText),explain:q.explain};
+  });
+  $('questions').innerHTML=curSet._shuffled.map((q,qi)=>{
+    const opts=q.options.map((o,oi)=>
+      `<button class="opt" data-qi="${qi}" data-oi="${oi}"><span class="num">${oi+1}</span><span>${esc(o)}</span></button>`
+    ).join('');
+    return `<div class="qblock" data-qi="${qi}">
+      <span class="qtype">${esc(q.type)}</span>
+      <div class="qtext">${esc(q.q)}</div>
+      <div class="opts">${opts}</div>
+      <div class="qexplain" id="qex-${qi}"><span class="lbl">해설</span><span>${esc(q.explain)}</span></div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pickOpt(b));
+  $('gradeBtn').style.display='inline-block';$('gradeBtn').disabled=false;
+  $('nextBtn').style.display='none';$('gradeInfo').textContent='';
+  $('sIdx').textContent=idx;$('sTot').textContent=total;
+  $('pfill').style.width=((idx-1)/total*100)+'%';
+}
+
+function pickOpt(btn){
+  if(graded)return;
+  const qi=btn.dataset.qi,oi=parseInt(btn.dataset.oi);
+  picks[qi]=oi;
+  // visually mark selection within this question
+  document.querySelectorAll('.opt[data-qi="'+qi+'"]').forEach(b=>b.style.borderColor='');
+  document.querySelectorAll('.opt[data-qi="'+qi+'"]').forEach(b=>{
+    if(parseInt(b.dataset.oi)===oi){b.style.borderColor='var(--rust)';b.style.background='#fff';b.style.boxShadow='0 0 0 2px var(--rust-soft)';}
+    else{b.style.boxShadow='';b.style.background='';}
+  });
+}
+
+$('gradeBtn').onclick=()=>{
+  if(graded)return;
+  if(Object.keys(picks).length<curSet._shuffled.length){
+    $('gradeInfo').innerHTML='<span style="color:var(--bad)">모든 문항에 답해 주세요</span>';
+    return;
+  }
+  graded=true;$('gradeBtn').style.display='none';$('gradeInfo').textContent='';
+  let correct=0;const n=curSet._shuffled.length;
+  curSet._shuffled.forEach((q,qi)=>{
+    const picked=picks[qi];
+    const tk=typeKey(q.type);
+    typeStats[tk].t++;totalQ++;
+    document.querySelectorAll('.opt[data-qi="'+qi+'"]').forEach(b=>{
+      b.disabled=true;b.style.boxShadow='';b.style.borderColor='';b.style.background='';
+      const oi=parseInt(b.dataset.oi);
+      if(oi===q.answer)b.classList.add('correct');
+      else if(oi===picked)b.classList.add('wrong');
+    });
+    if(picked===q.answer){correct++;typeStats[tk].c++;}
+    $('qex-'+qi).classList.add('show');
+  });
+  totalCorrect+=correct;
+  if(correct===n)perfectSets++;
+  $('gradeInfo').innerHTML='이 지문 <b>'+correct+'/'+n+'</b> 정답';
+  $('nextBtn').style.display='inline-block';
+  $('nextBtn').textContent=(queue.length===0?'결과 보기 →':'다음 지문 →');
+  $('sScore').textContent=totalCorrect;
+  $('pfill').style.width=(idx/total*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+$('nextBtn').onclick=nextSet;
+$('backBtn').onclick=()=>{$('drill').style.display='none';$('result').style.display='none';$('start').style.display='block';};
+
+function showResult(){
+  $('drill').style.display='none';$('result').style.display='block';
+  const pct=totalQ?Math.round(totalCorrect/totalQ*100):0;
+  $('rScore').textContent=pct+'%';
+  $('rSub').textContent='총 '+totalQ+'문항 중 '+totalCorrect+'개 정답';
+  $('rCorrect').textContent=totalCorrect;
+  $('rWrong').textContent=totalQ-totalCorrect;
+  $('rPerfect').textContent=perfectSets+' / '+total;
+  $('tTopic').textContent=typeStats.topic.c+'/'+typeStats.topic.t;
+  $('tSyn').textContent=typeStats.syn.c+'/'+typeStats.syn.t;
+  $('tTF').textContent=typeStats.tf.c+'/'+typeStats.tf.t;
+}
+$('restart').onclick=()=>{$('result').style.display='none';$('start').style.display='block';};
+$('startBtn').onclick=()=>startDrill();
+
+</script>
+</body>
+</html>
