@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloze Drill — Verb 300 + Voca 100</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F3EA;--paper2:#FBF8F1;--ink:#2A2723;--ink2:#6B6358;--ink3:#9A9183;
+  --rust:#C2511F;--rust-soft:#F4E3D8;--line:#E5DCCB;--line2:#D8CDB8;
+  --ok:#0F6E56;--ok-bg:#D9EFE6;--bad:#B23B2E;--bad-bg:#F6DED9;
+  --serif:'Gowun Batang',serif;--display:'Fraunces',serif;--sans:'IBM Plex Sans KR',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--line) 0.5px,transparent 0.5px);background-size:22px 22px;min-height:100vh}
+.shell{max-width:760px;margin:0 auto;padding:0 22px 64px}
+.kicker{font-family:var(--display);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--rust);font-weight:600}
+.btn{font-family:var(--sans);font-size:15px;font-weight:500;padding:13px 22px;border-radius:12px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;transition:transform .1s,opacity .15s}
+.btn:hover{opacity:.9}.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+.btn.ghost:hover{background:#fff;opacity:1}
+
+/* ===== START SCREEN ===== */
+#start{padding:54px 0}
+#start h1{font-family:var(--serif);font-weight:700;font-size:clamp(34px,6vw,54px);line-height:1.06;margin:16px 0 8px}
+#start h1 .en{display:block;font-family:var(--display);font-style:italic;font-weight:400;color:var(--ink2);font-size:.42em;margin-top:12px}
+#start .lede{color:var(--ink2);max-width:560px;margin-bottom:34px;font-size:15px;line-height:1.72}
+.opt-group{margin-bottom:26px}
+.opt-group>.label{font-size:12.5px;font-weight:600;color:var(--ink3);letter-spacing:.05em;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.opt-group>.label .ln{flex:1;height:1px;background:var(--line2)}
+.choices{display:flex;gap:10px;flex-wrap:wrap}
+.choice{flex:1;min-width:130px;padding:14px 16px;border:1.5px solid var(--line2);border-radius:13px;background:var(--paper2);cursor:pointer;transition:all .15s}
+.choice:hover{border-color:var(--ink3)}
+.choice.sel{border-color:var(--rust);background:#fff;box-shadow:0 0 0 3px var(--rust-soft)}
+.choice .t{font-family:var(--serif);font-weight:700;font-size:16px}
+.choice .d{font-size:12px;color:var(--ink2);margin-top:3px}
+#startBtn{margin-top:8px;width:100%;font-size:16px;padding:16px}
+
+/* ===== DRILL SCREEN ===== */
+#drill{display:none;padding:24px 0}
+.qtopbar{margin-bottom:14px}
+.backbtn{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:13px;color:var(--ink2);background:transparent;border:1px solid var(--line2);border-radius:9px;padding:7px 13px;cursor:pointer;transition:all .15s}
+.backbtn:hover{border-color:var(--ink3);background:var(--paper2);color:var(--ink)}
+.backbtn svg{width:15px;height:15px;stroke:currentColor}
+.qbar{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.progress{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress .fill{height:100%;background:var(--rust);width:0;transition:width .3s}
+.qstats{display:flex;gap:16px;font-size:13px;color:var(--ink2);font-family:var(--display);font-weight:500}
+.qstats b{color:var(--ink)}
+.card{background:var(--paper2);border:1.5px solid var(--line2);border-radius:20px;padding:30px 28px;margin-bottom:18px;position:relative}
+.qnum{position:absolute;top:18px;right:22px;font-family:var(--display);font-size:13px;color:var(--ink3);font-weight:600;letter-spacing:.06em}
+.sentence{font-family:var(--serif);font-size:18px;line-height:1.7;color:var(--ink);margin-top:8px;margin-bottom:4px}
+.blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--rust);height:1.4em;vertical-align:bottom;margin:0 4px}
+.blank.filled{border-bottom-color:var(--ok)}
+.blank.filled-wrong{border-bottom-color:var(--bad)}
+.blank .fill-w{font-family:var(--display);font-weight:600;color:var(--ok);padding:0 6px;font-size:18px}
+.blank.filled-wrong .fill-w{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1.5px}
+.blank .correct-after{font-family:var(--display);font-weight:600;color:var(--ok);padding:0 6px;font-size:18px}
+
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
+.ans{padding:14px 16px;border:1.5px solid var(--line2);border-radius:12px;background:var(--paper2);cursor:pointer;font-size:15px;text-align:left;transition:all .12s;font-family:var(--sans);color:var(--ink);display:flex;align-items:center;gap:10px}
+.ans:hover{border-color:var(--ink3);background:#fff}
+.ans:disabled{cursor:default}
+.ans .k{font-family:var(--display);font-size:12px;color:var(--ink3);font-weight:600;flex-shrink:0}
+.ans .w{font-family:var(--display);font-weight:600}
+.ans .m{font-size:12.5px;color:var(--ink3);margin-left:auto;display:none;font-family:var(--sans);font-weight:400}
+.ans.show-m .m{display:inline}
+.ans.correct{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.ans.correct .k,.ans.correct .m{color:var(--ok)}
+.ans.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.ans.wrong .k{color:var(--bad)}
+
+.explain{display:none;margin-top:10px;padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:13px;font-size:14.5px;line-height:1.7;color:var(--ink2)}
+.explain.show{display:block}
+.explain .label{font-family:var(--display);font-size:11px;color:var(--rust);font-weight:600;letter-spacing:.08em;display:block;margin-bottom:5px;text-transform:uppercase}
+
+.nextbar{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.feedback{font-size:14px;font-weight:500}
+.feedback.ok{color:var(--ok)}.feedback.bad{color:var(--bad)}
+
+/* ===== RESULT SCREEN ===== */
+#result{display:none;padding:40px 0}
+#result h2{font-family:var(--serif);font-weight:700;font-size:34px;margin-bottom:6px}
+.score-big{font-family:var(--display);font-size:72px;font-weight:600;color:var(--rust);line-height:1;margin:18px 0 6px}
+.score-sub{color:var(--ink2);font-size:15px;margin-bottom:30px}
+.metrics{display:flex;gap:12px;margin-bottom:30px;flex-wrap:wrap}
+.metric{flex:1;min-width:120px;background:var(--paper2);border:1px solid var(--line2);border-radius:14px;padding:16px 18px}
+.metric .l{font-size:12px;color:var(--ink3)}
+.metric .v{font-family:var(--display);font-size:26px;font-weight:600;margin-top:3px}
+.missed h3{font-family:var(--serif);font-weight:700;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.missed .badge{background:var(--bad-bg);color:var(--bad);font-size:12px;padding:2px 9px;border-radius:99px;font-family:var(--display);font-weight:600}
+.misslist{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.missrow{padding:14px 16px;background:var(--paper2);border:1px solid var(--line);border-radius:11px}
+.missrow .qn{font-family:var(--display);font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.06em}
+.missrow .s{font-family:var(--serif);font-size:14.5px;color:var(--ink);margin-top:4px;line-height:1.5}
+.missrow .a{font-size:13px;color:var(--ok);margin-top:6px;font-family:var(--sans)}
+.missrow .a b{font-family:var(--display);font-weight:600}
+.result-actions{display:flex;gap:11px;flex-wrap:wrap}
+.perfect{text-align:center;padding:20px;color:var(--ok);font-family:var(--serif);font-size:18px;font-weight:700}
+
+@media(max-width:560px){.answers{grid-template-columns:1fr}.shell{padding:0 16px 50px}.ans .m{display:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- START -->
+  <section id="start">
+    <div class="kicker">4단계 · 빈칸 어휘 추론</div>
+    <h1>Cloze Drill<span class="en">Pick the right word for the blank</span></h1>
+    <p class="lede">한 문장 속 빈칸에 들어갈 알맞은 단어를 고르세요. 보기 4개는 모두 <b>학습한 446개 단어</b> 안에서 나오므로, 정답뿐 아니라 오답 단어의 의미까지 동시에 점검할 수 있습니다. 답을 누르면 정답 단어가 빈칸에 채워지고 해설이 펼쳐집니다.</p>
+
+    <div class="opt-group">
+      <div class="label">문항 수<span class="ln"></span></div>
+      <div class="choices" id="countChoices">
+        <div class="choice sel" data-count="10"><div class="t">10문항</div><div class="d">빠른 점검 (Pack 1개)</div></div>
+        <div class="choice" data-count="20"><div class="t">20문항</div><div class="d">중간 분량</div></div>
+        <div class="choice" data-count="40"><div class="t">40문항</div><div class="d">전체</div></div>
+      </div>
+    </div>
+
+    <div class="opt-group">
+      <div class="label">순서<span class="ln"></span></div>
+      <div class="choices" id="orderChoices">
+        <div class="choice sel" data-order="seq"><div class="t">순서대로</div><div class="d">1번부터 순서대로</div></div>
+        <div class="choice" data-order="shuffle"><div class="t">섞기</div><div class="d">랜덤 순서</div></div>
+      </div>
+    </div>
+
+    <button class="btn" id="startBtn">시작하기 →</button>
+  </section>
+
+  <!-- DRILL -->
+  <section id="drill">
+    <div class="qtopbar">
+      <button class="backbtn" id="backBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>처음으로</button>
+    </div>
+    <div class="qbar">
+      <div class="progress"><div class="fill" id="pfill"></div></div>
+      <div class="qstats"><span>정답 <b id="sScore">0</b></span><span><b id="sIdx">1</b>/<b id="sTot">10</b></span></div>
+    </div>
+
+    <div class="card">
+      <span class="qnum" id="qnum">Q 01</span>
+      <div class="sentence" id="sentence">…</div>
+    </div>
+
+    <div class="answers" id="answers"></div>
+
+    <div class="explain" id="explain">
+      <span class="label">해설</span>
+      <span id="explainText"></span>
+    </div>
+
+    <div class="nextbar">
+      <span class="feedback" id="feedback"></span>
+      <button class="btn ghost" id="nextBtn" style="display:none">다음 →</button>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result">
+    <div class="kicker">결과</div>
+    <h2>수고했어요!</h2>
+    <div class="score-big" id="rScore">0%</div>
+    <div class="score-sub" id="rSub"></div>
+    <div class="metrics">
+      <div class="metric"><div class="l">정답</div><div class="v" id="rCorrect" style="color:var(--ok)">0</div></div>
+      <div class="metric"><div class="l">오답</div><div class="v" id="rWrong" style="color:var(--bad)">0</div></div>
+      <div class="metric"><div class="l">정답률</div><div class="v" id="rPct">0%</div></div>
+    </div>
+    <div class="missed" id="missedBox">
+      <h3>다시 볼 문항 <span class="badge" id="missCount">0</span></h3>
+      <div class="misslist" id="misslist"></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn" id="retryWrong" style="display:none">틀린 문항만 다시 →</button>
+      <button class="btn ghost" id="restart">처음으로</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const QUESTIONS=[{"id":1,"sentence":"The new program will ___ free meals to children from low-income families during the summer break.","answer":"provide","options":["provide","refuse","reveal","ignore"],"explain":"'무료 식사를 ~ 한다'에서 '제공하다'가 자연스럽다. refuse(거절하다), reveal(드러내다), ignore(무시하다)는 문맥에 맞지 않는다."},{"id":2,"sentence":"We must ___ that every worker is treated fairly and receives proper compensation.","answer":"ensure","options":["fail","ensure","destroy","avoid"],"explain":"that절을 목적어로 받아 '반드시 ~하게 하다'의 의미가 필요하다. ensure가 정답. fail(실패하다), destroy(파괴하다), avoid(피하다)는 의미상 어색하다."},{"id":3,"sentence":"The company plans to ___ energy costs by installing solar panels on every building.","answer":"reduce","options":["increase","reduce","share","store"],"explain":"태양광 패널을 설치해 에너지 '비용을 ~한다'이므로 '줄이다'가 정답. increase는 정반대 의미, share·store는 비용과 어울리지 않는다."},{"id":4,"sentence":"After ten years of hard work, she finally ___ her goal of becoming a senior engineer.","answer":"achieved","options":["refused","ignored","achieved","destroyed"],"explain":"'10년의 노력 끝에 목표를 ~했다'이므로 '달성하다'가 자연스럽다. refuse·ignore·destroy는 목표와 어울리지 않는다."},{"id":5,"sentence":"The committee will ___ the evidence carefully before they make a final decision.","answer":"examine","options":["examine","ignore","produce","destroy"],"explain":"'증거를 신중히 ~한다'이므로 '조사하다, 검토하다'가 정답. ignore(무시), produce(생산), destroy(파괴)는 모두 어울리지 않는다."},{"id":6,"sentence":"Researchers ___ that the new policy could prevent damage to the environment.","answer":"discovered","options":["refused","concealed","discovered","ignored"],"explain":"that절을 받아 '~을 알아내다, 발견하다'의 의미가 필요하다. discovered가 정답. conceal은 정반대(숨기다)이고 나머지도 어색하다."},{"id":7,"sentence":"She refused to ___ the offer because it failed to meet her expectations.","answer":"accept","options":["refuse","accept","reveal","destroy"],"explain":"'기대에 못 미쳐 제안을 ~하기를 거절했다'이므로 받아들이다(accept)가 정답. refuse는 동어 반복이고 reveal·destroy는 의미가 맞지 않는다."},{"id":8,"sentence":"Many witnesses claimed that the suspect had attempted to ___ the truth from the police.","answer":"conceal","options":["reveal","share","conceal","deliver"],"explain":"용의자가 진실을 경찰로부터 '숨기려' 했다는 의미이므로 conceal이 정답. reveal과 share는 정반대 의미이고 deliver(배달하다)는 어울리지 않는다."},{"id":9,"sentence":"Although the experiment failed, the scientist ___ valuable lessons and continued his research.","answer":"learned","options":["destroyed","ignored","refused","learned"],"explain":"'실패했지만 귀중한 교훈을 ~했다'이므로 '배웠다'가 정답. destroy·ignore·refuse는 lessons와 어울리지 않는다."},{"id":10,"sentence":"Government regulations should ___ harm to consumers and protect public health.","answer":"prevent","options":["prevent","allow","increase","produce"],"explain":"정부 규제가 소비자에게 해가 가지 않도록 '막다'가 정답. allow(허용하다)는 정반대이고 increase·produce도 어색하다."},{"id":11,"sentence":"Recent studies ___ that climate change is happening faster than previously expected.","answer":"indicate","options":["destroy","indicate","ignore","refuse"],"explain":"연구가 사실을 '시사하다, 보여주다'의 의미이므로 indicate가 정답. 연구가 destroy/ignore/refuse한다는 표현은 의미가 맞지 않는다."},{"id":12,"sentence":"The teacher will ___ several books that may inspire her young students.","answer":"recommend","options":["recommend","destroy","refuse","conceal"],"explain":"선생님이 학생들에게 책을 '~한다'이므로 추천하다(recommend)가 정답. 나머지는 책과 어울리지 않는다."},{"id":13,"sentence":"The new policy ___ a major change that will affect the entire industry.","answer":"involves","options":["destroys","ignores","reduces","involves"],"explain":"정책이 변화를 '수반하다, 포함하다'의 의미이므로 involves가 정답. destroy·ignore·reduce는 모두 어색하다."},{"id":14,"sentence":"He decided to ___ his experience with the new students who had just joined the program.","answer":"share","options":["share","conceal","destroy","refuse"],"explain":"경험을 학생들과 '~한다'이므로 공유하다(share)가 정답. conceal·destroy·refuse는 experience와 결합이 부자연스럽다."},{"id":15,"sentence":"Effective leaders ___ their team members to share ideas and contribute to decisions.","answer":"encourage","options":["ignore","refuse","encourage","destroy"],"explain":"지도자가 팀원에게 아이디어를 나누도록 '~한다'이므로 격려하다(encourage)가 정답. ignore·refuse는 정반대 방향이고 destroy는 어색하다."},{"id":16,"sentence":"He always ___ his promises and finishes every project before the deadline.","answer":"keeps","options":["breaks","keeps","ignores","refuses"],"explain":"약속을 '지키다, 유지하다'의 keep이 정답. breaks(약속을 깨다)는 정반대 의미이고 ignore·refuse도 어색하다."},{"id":17,"sentence":"The store will ___ the items you ordered as soon as they arrive at the warehouse.","answer":"deliver","options":["conceal","deliver","destroy","refuse"],"explain":"주문한 물품을 '배달하다'의 deliver가 정답. conceal·destroy·refuse는 문맥상 어울리지 않는다."},{"id":18,"sentence":"The chairman remained calm even though several members began to ___ loudly about the proposal.","answer":"argue","options":["accept","argue","ignore","complete"],"explain":"'큰 소리로 ~하기 시작했다'에서 '논쟁하다, 다투다'의 argue가 정답. accept(받아들이다)는 큰 소리로 다투는 상황과 어울리지 않고 ignore·complete도 어색하다."},{"id":19,"sentence":"The doctor advised her to ___ the hospital immediately and begin treatment without delay.","answer":"enter","options":["destroy","leave","enter","ignore"],"explain":"문맥상 '즉시 ~ 하라'와 'begin treatment'를 보면 '들어가다, 입원하다'의 enter가 정답. leave(떠나다)는 정반대이고 나머지도 어색하다."},{"id":20,"sentence":"We should ___ carefully when others are speaking and respect their opinions.","answer":"listen","options":["ignore","refuse","listen","destroy"],"explain":"'남이 말할 때 신중히 ~한다'이므로 듣다(listen)가 정답. ignore·refuse는 정반대 방향이고 destroy는 의미가 맞지 않는다."},{"id":21,"sentence":"Several witnesses gave the same ___ to the police about what they had seen.","answer":"account","options":["account","barrier","tradition","argument"],"explain":"목격자가 경찰에게 본 일을 '설명, 진술'한 것이므로 account가 정답. barrier(장벽), tradition(전통), argument(논쟁)는 의미가 맞지 않는다."},{"id":22,"sentence":"Many students struggle to understand the basic ___ of physics during the first semester.","answer":"concepts","options":["concepts","buildings","consequences","appointments"],"explain":"물리학의 '기본 ~을 이해하기 어려워한다'이므로 개념(concepts)이 정답. buildings·consequences·appointments는 '이해하다'와 의미가 어색하다."},{"id":23,"sentence":"The author offered detailed ___ to support his theory about the origin of language.","answer":"evidence","options":["evidence","consequence","barrier","deadline"],"explain":"이론을 뒷받침할 '~를 제공했다'이므로 증거(evidence)가 정답. consequence(결과), barrier(장벽), deadline(마감)은 이론 뒷받침과 무관하다."},{"id":24,"sentence":"Ignoring small mistakes can lead to serious ___ in complex engineering projects.","answer":"consequences","options":["opportunities","advantages","consequences","achievements"],"explain":"작은 실수가 가져오는 부정적 '결과'가 필요하므로 consequences가 정답. opportunities·advantages·achievements는 긍정적 의미라 lead to ~ in과 어울리지 않는다."},{"id":25,"sentence":"The committee will present their ___ to the public after a thorough investigation.","answer":"findings","options":["consequences","findings","barriers","appetites"],"explain":"철저한 조사 후 대중에게 발표할 것은 '조사 결과'이므로 findings가 정답. consequences(결과의 부정적 영향), barriers(장벽), appetites(욕구)는 present의 목적어로 어색하다."},{"id":26,"sentence":"The government should provide ___ support to help families during the economic crisis.","answer":"adequate","options":["narrow","silent","adequate","artificial"],"explain":"위기 가정을 돕기 위한 '충분한' 지원이므로 adequate가 정답. narrow(좁은), silent(조용한), artificial(인공의)은 support와 어울리지 않는다."},{"id":27,"sentence":"Despite the heavy traffic, the manager managed to arrive at the office in time for the ___ meeting.","answer":"important","options":["important","silent","narrow","artificial"],"explain":"교통 체증을 무릅쓰고 제 시간에 도착한 회의이므로 '중요한' 회의가 자연스럽다. silent·narrow·artificial은 meeting을 수식하기에 부적절하다."},{"id":28,"sentence":"The artist created a truly ___ work that drew the attention of many critics around the world.","answer":"unique","options":["unique","silent","narrow","afraid"],"explain":"비평가들의 주목을 받은 작품이므로 '독특한, 유일무이한' unique가 정답. 나머지 형용사는 work의 핵심 특징을 표현하지 못한다."},{"id":29,"sentence":"Although the road was ___, the driver managed to reach the destination safely before sunset.","answer":"narrow","options":["narrow","important","creative","valuable"],"explain":"운전이 어려운 길의 특징이 필요하므로 '좁은' narrow가 정답. important·creative·valuable은 길의 물리적 특성을 표현하지 못한다."},{"id":30,"sentence":"The young athlete trained ___ every day to win the gold medal at the championship.","answer":"hard","options":["luckily","hard","loudly","accidentally"],"explain":"금메달을 따기 위해 '열심히' 훈련했다는 의미이므로 hard가 정답. luckily(다행히), loudly(시끄럽게), accidentally(우연히)는 train과 의미상 어색하다."},{"id":31,"sentence":"___ the experiment failed, the scientist gained important insights and continued his research.","answer":"Although","options":["Because","Although","Until","Within"],"explain":"실험은 실패했지만 통찰을 얻었다는 양보 관계이므로 Although가 정답. Because(이유), Until(시간), Within(범위)은 이 양보 관계를 표현하지 못한다."},{"id":32,"sentence":"The package will be delivered ___ a week if there is no problem at customs.","answer":"within","options":["above","within","across","along"],"explain":"'일주일 ~에'라는 시간 범위가 필요하므로 '~ 이내에'의 within이 정답. above(위에), across(가로질러), along(따라)은 시간 범위 의미가 아니다."},{"id":33,"sentence":"She is not interested in the offer ___; she has already decided to leave the company.","answer":"anymore","options":["anymore","already","still","almost"],"explain":"부정문에서 '더 이상 ~ 않다'를 만드는 anymore가 정답. already(이미)는 긍정문, still은 진행, almost(거의)는 의미가 다르다."},{"id":34,"sentence":"He worked as ___ as possible to finish the project before the deadline arrived.","answer":"carefully","options":["carefully","luckily","accidentally","loudly"],"explain":"프로젝트를 마감 전에 끝내려고 'as ~ as possible(가능한 한 ~하게)'에 어울리는 부사는 '주의 깊게'의 carefully. luckily(다행히), accidentally(우연히), loudly(시끄럽게)는 work 방식을 표현하기에 부적절하다."},{"id":35,"sentence":"The company decided to delay the launch ___ several technical problems remained unsolved.","answer":"because","options":["because","although","within","above"],"explain":"기술적 문제가 남아 있어서 출시를 미뤘다는 인과 관계이므로 because가 정답. although(양보), within(범위), above(위치)는 인과 관계를 표현하지 못한다."},{"id":36,"sentence":"Students must ___ to use online resources if they want to do well in the modern classroom.","answer":"be able","options":["be able","be afraid","be aware","be faced"],"explain":"to부정사가 뒤따르면서 능력의 의미가 필요하므로 'be able to(~할 수 있다)'가 정답. be afraid to·be aware of·be faced with는 의미가 다르다."},{"id":37,"sentence":"He was not only a great teacher but ___ a successful researcher in his field.","answer":"also","options":["also","always","ago","apart"],"explain":"'not only A but also B(A뿐만 아니라 B도)' 구문이므로 also가 정답. always(항상), ago(전에), apart(떨어져)는 이 상관 접속사 구조에 맞지 않는다."},{"id":38,"sentence":"After all the efforts, the team ___ to complete the difficult task within the given time.","answer":"managed","options":["refused","managed","ignored","destroyed"],"explain":"'to부정사를 동반해 가까스로 ~해내다'의 의미가 필요하므로 managed가 정답. refused는 정반대 의미이고 ignored·destroyed는 to부정사와 결합되지 않는다."},{"id":39,"sentence":"Several people gathered to hear the speaker, who ___ an entirely new approach to the old problem.","answer":"suggested","options":["destroyed","ignored","suggested","refused"],"explain":"낡은 문제에 대한 새 접근법을 '제안하다'이므로 suggested가 정답. destroyed·ignored·refused는 approach와 결합이 어색하다."},{"id":40,"sentence":"We deeply ___ your prompt response and the effort you made to help us with this matter.","answer":"appreciate","options":["refuse","appreciate","ignore","destroy"],"explain":"정중한 감사의 표현이므로 '감사히 여기다'의 appreciate가 정답. refuse·ignore·destroy는 모두 부정적 의미라 감사 표현에 맞지 않는다."}];
+const GLOSS={"provide":"제공하다, 공급하다(supply/give/furnish)","refuse":"거절하다, 거부하다(decline/reject)(↔ accept 받아들이다)","reveal":"드러내다, 밝히다, 폭로하다(disclose/expose/uncover)(↔ conceal 감추다)","ignore":"무시하다, 못 본 척하다(disregard/overlook)(↔ notice 주목하다)","fail":"실패하다, ~하지 못하다(be unable to/fall short)(↔ succeed 성공하다)","ensure":"반드시 ~하게 하다, 보장하다, 확실히 하다(guarantee/secure/assure)","destroy":"파괴하다, 말살하다, 죽이다(demolish/devastate/annihilate/ruin)(↔ build 짓다)","avoid":"방지하다, 막다, 회피하다, 피하다(prevent/dodge/evade)","increase":"동 늘리다, 증가하다, 인상하다(raise/grow/expand)(↔ decrease 줄다)","reduce":"줄이다, 축소하다, 낮추다(decrease/diminish/lessen)(↔ increase/raise 늘리다)","share":"동 공유하다, 나누다, 함께 쓰다(distribute/split)","store":"명 상점, 가게, 비축(shop/supply)","refused":"거절하다, 거부하다(decline/reject)(↔ accept 받아들이다)","ignored":"무시하다, 못 본 척하다(disregard/overlook)(↔ notice 주목하다)","achieved":"달성하다","destroyed":"파괴하다, 말살하다, 죽이다(demolish/devastate/annihilate/ruin)(↔ build 짓다)","examine":"조사하다, 검토하다, 검사하다(inspect/investigate/scrutinize)","produce":"생산하다, 만들어 내다, 낳다(create/generate/manufacture/yield)","concealed":"감추다, 숨기다, 숨다(hide/cover/disguise)(↔ reveal 드러내다)","discovered":"발견하다, 알아내다","accept":"받아들이다, 수락하다, 인정하다(receive/admit/agree to)(↔ refuse/reject 거절하다)","conceal":"감추다, 숨기다, 숨다(hide/cover/disguise)(↔ reveal 드러내다)","deliver":"배달하다, 인도하다(distribute/dispatch)","learned":"배우다, 학습하다, 알게 되다(master/acquire/grasp/study)","prevent":"예방하다, 막다, 방지하다(stop/avoid/avert)","allow":"허락하다, 용납하다, 인정하다(permit/authorize/enable)(↔ forbid 금지하다)","indicate":"나타내다, 보여주다, 시사하다(show/signal/suggest)","recommend":"추천하다, 권고하다, 권하다(suggest/advise/propose)","destroys":"파괴하다, 말살하다, 죽이다(demolish/devastate/annihilate/ruin)(↔ build 짓다)","ignores":"무시하다, 못 본 척하다(disregard/overlook)(↔ notice 주목하다)","reduces":"줄이다, 축소하다, 낮추다(decrease/diminish/lessen)(↔ increase/raise 늘리다)","involves":"수반하다, 포함하다","encourage":"격려하다, 용기를 북돋우다, 부추기다(motivate/inspire/stimulate)(↔ discourage 의욕을 꺾다)","breaks":"동 깨다, 부서지다, 고장 나다, 어기다(shatter/fracture/violate)","keeps":"유지하다, 계속 ~하게 두다(maintain/retain)","refuses":"거절하다, 거부하다(decline/reject)(↔ accept 받아들이다)","argue":"주장하다, 논증하다(claim/contend/assert)","complete":"동 완료하다, 끝마치다, 기입하다(finish/fulfill)","leave":"동 떠나다, 출발하다, 남기다(depart/exit/abandon)","enter":"들어가다, 입장하다(come in/go in)","listen":"듣다, 귀 기울이다, 경청하다(hear/heed/attend)","account":"명 계좌, 장부, 설명(record/report/bank account)","barrier":"장벽, 장애물(obstacle/obstruction/wall)","tradition":"전통, 관례, 풍습(custom/heritage/convention)","argument":"논쟁, 언쟁, 주장, 논거(debate/dispute/reasoning)","concepts":"개념, 관념","buildings":"건물, 건축물(structure/edifice)","consequences":"결과, 영향","appointments":"약속, 예약(meeting/engagement)","evidence":"증거, 흔적, 단서(proof/sign)","consequence":"결과, 영향, 중요성(result/outcome/effect)","deadline":"기한, 마감일(due date/cutoff)","opportunities":"기회, 호기(chance/occasion)","advantages":"유리한 점, 장점, 이점(benefit/strength/edge)(↔ disadvantage 단점)","achievements":"업적, 달성, 성취(accomplishment/attainment/success)","findings":"조사 결과, 발견","barriers":"장벽, 장애물","appetites":"식욕, 욕구","narrow":"형 좁은, 한정된(slim/tight/limited)(↔ wide/broad 넓은)","silent":"조용한, 침묵의, 무언의(quiet/still/mute)(↔ noisy 시끄러운)","adequate":"충분한, 적절한, 알맞은(sufficient/enough/suitable)(↔ inadequate 부족한)","artificial":"인공의, 인위적인, 거짓된(synthetic/man-made/fake)(↔ natural 자연의)","important":"중요한, 의미 있는(significant/crucial/essential)(↔ unimportant 중요하지 않은)","unique":"독특한, 유일한, 특유의(distinct/original/singular)(↔ common 흔한)","afraid":"두려워하는, 겁내는, 걱정하는(scared/frightened/worried)","creative":"창의적인, 독창적인(imaginative/original/inventive)","valuable":"귀중한, 가치 있는(precious/worthwhile)(↔ worthless 가치 없는)","luckily":"다행히, 운 좋게도(fortunately/thankfully)(↔ unfortunately 불행히도)","hard":"형 단단한, 어려운, 힘든(firm/difficult/tough)(↔ soft 부드러운, easy 쉬운)","loudly":"큰 소리로, 소란스럽게(noisily)(↔ quietly 조용히)","accidentally":"우연히, 뜻하지 않게(by chance/unintentionally)(↔ deliberately 의도적으로)","because":"~ 때문에, ~ 해서(since/as/for the reason that)","although":"비록 ~이긴 하지만, 그럼에도 불구하고(though/even though/while)","until":"~까지, ~할 때까지(till/up to)","within":"~이내에, ~안에(inside/in less than)(↔ outside ~밖에)","above":"전 ~보다 위에, ~ 이상을 넘어, ~보다 많은(over/exceeding)(↔ below ~ 아래에)","across":"전 건너서, 가로질러, 맞은편에(over/through/spanning)","along":"전 ~을 따라(in the line of/following)","anymore":"더 이상, 이제는 (주로 부정문에서)(no longer/any longer)","already":"이미, 벌써(by now/previously)(↔ yet 아직)","still":"부 여전히, 아직도(yet/even now)","almost":"거의, 대부분(nearly/practically)","carefully":"주의 깊게, 신중히, 조심스럽게(cautiously/thoroughly)(↔ carelessly 부주의하게)","be able":"~할 수 있다","be afraid":"두려워하는, 겁내는","be aware":"알고 있는, 인식하고 있는","be faced":"~에 직면하다","also":"또한, 게다가, ~도(too/as well/in addition)","always":"항상, 언제나, 늘(forever/constantly/all the time)(↔ never 결코 ~ 않다)","ago":"~전에(in the past/back)","apart":"떨어져, 따로, 헤어져(separately/aside)(↔ together 함께)","managed":"가까스로 ~해내다","suggested":"제안하다, 시사하다","appreciate":"감사히 여기다, 진가를 알아보다"};
+
+let cfg={count:10,order:'seq'};
+const $=id=>document.getElementById(id);
+
+function bindChoices(id,key,parse){
+  document.querySelectorAll('#'+id+' .choice').forEach(c=>{
+    c.onclick=()=>{
+      document.querySelectorAll('#'+id+' .choice').forEach(x=>x.classList.remove('sel'));
+      c.classList.add('sel');cfg[key]=parse(c.dataset[key]);
+    };
+  });
+}
+bindChoices('countChoices','count',v=>parseInt(v));
+bindChoices('orderChoices','order',v=>v);
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+let queue,total,idx,correct,wrong,missed,answered,curQ;
+
+function startDrill(pool){
+  let sel=pool||QUESTIONS.slice();
+  if(cfg.order==='shuffle')sel=shuffle(sel);
+  if(cfg.count>0&&!pool)sel=sel.slice(0,cfg.count);
+  queue=sel.slice();total=sel.length;idx=0;
+  correct=0;wrong=0;missed=[];
+  $('start').style.display='none';$('result').style.display='none';$('drill').style.display='block';
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(queue.length===0)return showResult();
+  curQ=queue.shift();idx++;answered=false;
+  $('qnum').textContent='Q '+String(curQ.id).padStart(2,'0');
+  // render sentence with blank
+  const sentenceHtml=esc(curQ.sentence).replace('___','<span class="blank" id="blank"></span>');
+  $('sentence').innerHTML=sentenceHtml;
+  // options (shuffled but answer position consistent per question by seed)
+  const opts=shuffle(curQ.options);
+  const labels=['A','B','C','D'];
+  $('answers').innerHTML=opts.map((o,i)=>{
+    const mean=GLOSS[o.toLowerCase()]||'';
+    return `<button class="ans" data-w="${esc(o)}"><span class="k">${labels[i]}</span><span class="w">${esc(o)}</span><span class="m">— ${esc(mean)}</span></button>`;
+  }).join('');
+  document.querySelectorAll('#answers .ans').forEach(b=>b.onclick=()=>answer(b));
+  $('explain').className='explain';$('feedback').textContent='';$('feedback').className='feedback';$('nextBtn').style.display='none';
+  // progress
+  $('sIdx').textContent=idx;$('sTot').textContent=total;$('sScore').textContent=correct;
+  $('pfill').style.width=((idx-1)/total*100)+'%';
+}
+
+function answer(btn){
+  if(answered)return;answered=true;
+  const picked=btn.dataset.w;
+  const isCorrect=picked===curQ.answer;
+  // mark all option buttons
+  document.querySelectorAll('#answers .ans').forEach(b=>{
+    b.disabled=true;b.classList.add('show-m');
+    if(b.dataset.w===curQ.answer)b.classList.add('correct');
+    else if(b===btn)b.classList.add('wrong');
+  });
+  // fill blank
+  const blank=$('blank');
+  if(isCorrect){
+    blank.classList.add('filled');
+    blank.innerHTML='<span class="fill-w">'+esc(picked)+'</span>';
+    correct++;
+    $('feedback').textContent='정답!';$('feedback').className='feedback ok';
+  }else{
+    blank.classList.add('filled-wrong');
+    blank.innerHTML='<span class="fill-w">'+esc(picked)+'</span> <span class="correct-after">'+esc(curQ.answer)+'</span>';
+    wrong++;missed.push(curQ);
+    $('feedback').textContent='정답: '+curQ.answer;$('feedback').className='feedback bad';
+  }
+  // show explanation
+  $('explainText').textContent=curQ.explain;
+  $('explain').classList.add('show');
+  $('sScore').textContent=correct;$('pfill').style.width=(idx/total*100)+'%';
+  $('nextBtn').style.display='inline-block';
+  $('nextBtn').textContent=(queue.length===0?'결과 보기 →':'다음 →');
+}
+
+$('nextBtn').onclick=nextQuestion;
+$('backBtn').onclick=()=>{$('drill').style.display='none';$('result').style.display='none';$('start').style.display='block';};
+document.addEventListener('keydown',e=>{
+  if($('drill').style.display==='none')return;
+  if((e.key==='Enter'||e.key===' ')&&answered&&$('nextBtn').style.display!=='none'){e.preventDefault();nextQuestion();}
+});
+
+function showResult(){
+  $('drill').style.display='none';$('result').style.display='block';
+  const pct=total?Math.round(correct/total*100):0;
+  $('rScore').textContent=pct+'%';
+  $('rSub').textContent=`총 ${total}문항 중 ${correct}개 정답`;
+  $('rCorrect').textContent=correct;$('rWrong').textContent=wrong;$('rPct').textContent=pct+'%';
+  $('missCount').textContent=missed.length;
+  if(missed.length){
+    $('missedBox').style.display='block';
+    $('misslist').innerHTML=missed.map(q=>{
+      const filled=esc(q.sentence).replace('___','<b style="color:var(--rust)">'+esc(q.answer)+'</b>');
+      return `<div class="missrow"><div class="qn">Q ${String(q.id).padStart(2,'0')}</div><div class="s">${filled}</div><div class="a">정답: <b>${esc(q.answer)}</b> — ${esc(GLOSS[q.answer.toLowerCase()]||'')}</div></div>`;
+    }).join('');
+    $('retryWrong').style.display='inline-block';
+  }else{
+    $('missedBox').innerHTML='<div class="perfect">완벽해요! 틀린 문항이 없습니다 🎉</div>';
+    $('retryWrong').style.display='none';
+  }
+}
+$('retryWrong').onclick=()=>{startDrill(missed.slice());};
+$('restart').onclick=()=>{$('result').style.display='none';$('start').style.display='block';};
+$('startBtn').onclick=()=>startDrill();
+
+</script>
+</body>
+</html>
